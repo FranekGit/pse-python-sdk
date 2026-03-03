@@ -1,3 +1,4 @@
+import pytest
 import responses
 
 from pse._client import PSEClient
@@ -6,7 +7,7 @@ from tests.conftest import BASE_URL, make_page, make_record, parse_params
 
 
 @responses.activate
-def test_query_returns_dataframe_with_parsed_datetimes():
+def test_query_returns_list_of_dicts():
     client = PSEClient(base_url=BASE_URL, page_size=100, timeout=5)
     ep = PriceCost(client)
 
@@ -15,7 +16,23 @@ def test_query_returns_dataframe_with_parsed_datetimes():
         f"{BASE_URL}/price-cost",
         json=make_page([make_record()]),
     )
-    df = ep.query("2024-01-01", "2024-01-01")
+    result = ep.query("2024-01-01", "2024-01-01")
+    assert isinstance(result, list)
+    assert len(result) == 1
+    assert result[0]["cen_cost"] == 100.0
+
+
+@responses.activate
+def test_query_dataframe_returns_dataframe_with_parsed_datetimes():
+    client = PSEClient(base_url=BASE_URL, page_size=100, timeout=5)
+    ep = PriceCost(client)
+
+    responses.add(
+        responses.GET,
+        f"{BASE_URL}/price-cost",
+        json=make_page([make_record()]),
+    )
+    df = ep.query("2024-01-01", "2024-01-01", format="dataframe")
     assert len(df) == 1
     assert "datetime64" in str(df["dtime"].dtype)
     assert "datetime64" in str(df["publication_ts"].dtype)
@@ -38,8 +55,9 @@ def test_query_split_selects_correct_columns():
             "cen_cost": 100.0,
         }]),
     )
-    df = ep.query_split(["cen_cost"], "2024-01-01", "2024-01-01")
-    assert "cen_cost" in df.columns
+    result = ep.query_split(["cen_cost"], "2024-01-01", "2024-01-01")
+    assert isinstance(result, list)
+    assert "cen_cost" in result[0]
 
     params = parse_params(responses.calls[0].request.url)
     select_cols = params["$select"].split(",")
@@ -49,7 +67,27 @@ def test_query_split_selects_correct_columns():
 
 
 @responses.activate
-def test_query_empty_returns_empty_dataframe():
+def test_query_split_dataframe():
+    client = PSEClient(base_url=BASE_URL, page_size=100, timeout=5)
+    ep = PriceCost(client)
+
+    responses.add(
+        responses.GET,
+        f"{BASE_URL}/price-cost",
+        json=make_page([{
+            "dtime": "2024-01-01T00:00:00",
+            "period": 1,
+            "business_date": "2024-01-01",
+            "publication_ts": "2024-01-01T12:00:00",
+            "cen_cost": 100.0,
+        }]),
+    )
+    df = ep.query_split(["cen_cost"], "2024-01-01", "2024-01-01", format="dataframe")
+    assert "cen_cost" in df.columns
+
+
+@responses.activate
+def test_query_empty_returns_empty_list():
     client = PSEClient(base_url=BASE_URL, page_size=100, timeout=5)
     ep = PriceCost(client)
 
@@ -58,8 +96,30 @@ def test_query_empty_returns_empty_dataframe():
         f"{BASE_URL}/price-cost",
         json=make_page([]),
     )
-    df = ep.query("2024-01-01", "2024-01-01")
+    result = ep.query("2024-01-01", "2024-01-01")
+    assert result == []
+
+
+@responses.activate
+def test_query_empty_dataframe():
+    client = PSEClient(base_url=BASE_URL, page_size=100, timeout=5)
+    ep = PriceCost(client)
+
+    responses.add(
+        responses.GET,
+        f"{BASE_URL}/price-cost",
+        json=make_page([]),
+    )
+    df = ep.query("2024-01-01", "2024-01-01", format="dataframe")
     assert len(df) == 0
+
+
+def test_query_invalid_format_raises_value_error():
+    client = PSEClient(base_url=BASE_URL, page_size=100, timeout=5)
+    ep = PriceCost(client)
+
+    with pytest.raises(ValueError, match="format must be"):
+        ep.query("2024-01-01", "2024-01-01", format="csv")
 
 
 @responses.activate

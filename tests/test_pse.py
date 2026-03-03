@@ -18,7 +18,7 @@ class TestPSERegistration:
 
 class TestPSEIntegration:
     @responses.activate
-    def test_get_cen_returns_dataframe(self, pse):
+    def test_get_cen_returns_list_of_dicts(self, pse):
         responses.add(
             responses.GET,
             f"{BASE_URL}/price-cost",
@@ -30,7 +30,25 @@ class TestPSEIntegration:
                 "cen_cost": 150.5,
             }]),
         )
-        df = pse.get_cen("2024-01-01", "2024-01-01")
+        result = pse.get_cen("2024-01-01", "2024-01-01")
+        assert isinstance(result, list)
+        assert len(result) == 1
+        assert "cen_cost" in result[0]
+
+    @responses.activate
+    def test_get_cen_dataframe_via_partial(self, pse):
+        responses.add(
+            responses.GET,
+            f"{BASE_URL}/price-cost",
+            json=make_page([{
+                "dtime": "2024-01-01T00:00:00",
+                "period": 1,
+                "business_date": "2024-01-01",
+                "publication_ts": "2024-01-01T12:00:00",
+                "cen_cost": 150.5,
+            }]),
+        )
+        df = pse.get_cen("2024-01-01", "2024-01-01", format="dataframe")
         assert len(df) == 1
         assert "cen_cost" in df.columns
 
@@ -41,10 +59,11 @@ class TestPSEIntegration:
             f"{BASE_URL}/price-cost",
             json=make_page([make_record()]),
         )
-        df = pse.get_price_cost("2024-01-01", "2024-01-01")
-        assert len(df) == 1
-        assert "cen_cost" in df.columns
-        assert "ckoeb_cost" in df.columns
+        result = pse.get_price_cost("2024-01-01", "2024-01-01")
+        assert isinstance(result, list)
+        assert len(result) == 1
+        assert "cen_cost" in result[0]
+        assert "ckoeb_cost" in result[0]
 
     @responses.activate
     def test_pagination_end_to_end(self, pse):
@@ -62,5 +81,5 @@ class TestPSEIntegration:
             next_url,
             json=make_page([make_record(period=2)]),
         )
-        df = pse.get_price_cost("2024-01-01", "2024-01-01")
-        assert len(df) == 2
+        result = pse.get_price_cost("2024-01-01", "2024-01-01")
+        assert len(result) == 2
