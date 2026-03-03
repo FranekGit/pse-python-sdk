@@ -11,14 +11,15 @@ requires-python = ">=3.10"
 license = "MIT"
 dependencies = [
     "requests>=2.28",
-    "pandas>=1.5",
 ]
 
 [project.optional-dependencies]
+pandas = ["pandas>=1.5"]
 dev = [
     "pytest",
     "responses",
     "ruff",
+    "pandas>=1.5",
 ]
 
 [tool.hatch.build.targets.wheel]
