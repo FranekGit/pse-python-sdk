@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pse-python-sdk"
+version = "0.1.0"
+description = "Python SDK for the PSE (Polskie Sieci Elektroenergetyczne) public REST API"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = [
+    "requests>=2.28",
+    "pandas>=1.5",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "responses",
+    "ruff",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pse"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+src = ["src"]
