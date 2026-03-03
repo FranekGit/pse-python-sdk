@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-
-import pandas as pd
+from typing import Literal
 
 from pse._client import PSEClient
 
@@ -15,6 +14,11 @@ class SplitMethod:
     method_name: str
     value_columns: list[str]
     doc: str = ""
+
+
+def _validate_format(fmt: str) -> None:
+    if fmt not in ("dict", "dataframe"):
+        raise ValueError(f"format must be 'dict' or 'dataframe', got {fmt!r}")
 
 
 class BaseEndpoint:
@@ -36,7 +40,14 @@ class BaseEndpoint:
     def _build_date_filter(self, start: str, end: str) -> str:
         return f"{self.date_field} ge '{start}' and {self.date_field} le '{end}'"
 
-    def _to_dataframe(self, records: list[dict]) -> pd.DataFrame:
+    def _to_dataframe(self, records: list[dict]):
+        try:
+            import pandas as pd
+        except ImportError:
+            raise ImportError(
+                "pandas is required for format='dataframe'. "
+                "Install it with: pip install pse-python-sdk[pandas]"
+            ) from None
         if not records:
             return pd.DataFrame()
         df = pd.DataFrame(records)
@@ -50,22 +61,27 @@ class BaseEndpoint:
         start: str,
         end: str,
         columns: list[str] | None = None,
-    ) -> pd.DataFrame:
-        """Query the endpoint for a date range, return a DataFrame."""
+        format: Literal["dict", "dataframe"] = "dict",
+    ) -> list[dict]:
+        """Query the endpoint for a date range."""
+        _validate_format(format)
         filter_expr = self._build_date_filter(start, end)
         records = self.client.fetch_all(
             self.path,
             select=columns,
             filter_expr=filter_expr,
         )
-        return self._to_dataframe(records)
+        if format == "dataframe":
+            return self._to_dataframe(records)
+        return records
 
     def query_split(
         self,
         value_columns: list[str],
         start: str,
         end: str,
-    ) -> pd.DataFrame:
+        format: Literal["dict", "dataframe"] = "dict",
+    ) -> list[dict]:
         """Query with only split_columns + value_columns selected."""
         columns = list(self.split_columns) + value_columns
-        return self.query(start, end, columns=columns)
+        return self.query(start, end, columns=columns, format=format)
