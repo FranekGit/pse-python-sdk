@@ -14,7 +14,7 @@ class PSE:
 
         from pse import PSE
         pse = PSE()
-        df = pse.get_cen("2024-01-01", "2024-01-31")
+        records = pse.get_cen("2024-01-01", "2024-01-31")
     """
 
     def __init__(
