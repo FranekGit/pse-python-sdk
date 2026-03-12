@@ -2,8 +2,8 @@ from urllib.parse import parse_qs, urlparse
 
 import pytest
 
-from pse import PSEClient
-from pse._client import HTTPClient
+from pse_sdk import PSEClient
+from pse_sdk._client import HTTPClient
 
 BASE_URL = "https://api.raporty.pse.pl/api"
 
