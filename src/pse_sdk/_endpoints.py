@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Literal, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from pse._client import HTTPClient
+    from pse_sdk._client import HTTPClient
 
 COMMON_COLUMNS = ["dtime", "period", "business_date", "publication_ts"]
 DATETIME_COLUMNS = ["dtime", "publication_ts"]
@@ -24,7 +24,7 @@ def _to_dataframe(records: list[dict]):
     except ImportError:
         raise ImportError(
             "pandas is required for format='dataframe'. "
-            "Install it with: pip install pse-python-sdk[pandas]"
+            "Install it with: pip install pse-sdk[pandas]"
         ) from None
     if not records:
         return pd.DataFrame()

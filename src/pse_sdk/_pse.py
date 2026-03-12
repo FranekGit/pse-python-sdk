@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from pse._client import HTTPClient
-from pse._endpoints import Endpoint, EndpointSplit
+from pse_sdk._client import HTTPClient
+from pse_sdk._endpoints import Endpoint, EndpointSplit
 
 
 class PSEClient:
@@ -12,7 +12,7 @@ class PSEClient:
 
     Usage::
 
-        from pse import PSEClient
+        from pse_sdk import PSEClient
         pse = PSEClient()
         records = pse.get_cen("2024-01-01", "2024-01-31")
         df = pse.get_price_cost("2024-01-01", "2024-01-31", format="dataframe")
