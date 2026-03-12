@@ -18,10 +18,10 @@ class PSEClient:
         df = pse.get_price_cost("2024-01-01", "2024-01-31", format="dataframe")
     """
 
-    # -- price-cost (full endpoint) --
+    # -- full endpoints --
     get_price_cost = Endpoint("price-cost")
 
-    # -- price-cost column slices --
+    # -- price-cost endpoint slices --
     get_cen = EndpointSplit("price-cost", ["cen_cost"])
     get_ckoeb = EndpointSplit("price-cost", ["ckoeb_cost"])
     get_ceb_sr = EndpointSplit("price-cost", ["ceb_sr_cost"])
