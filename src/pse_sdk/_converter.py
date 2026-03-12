@@ -6,9 +6,6 @@ from typing import Literal
 
 OutputFormat = Literal["dict", "dataframe"]
 
-DATETIME_COLUMNS = ["dtime", "publication_ts"]
-
-
 def to_dataframe(records: list[dict]):
     """Convert records to a pandas DataFrame."""
     try:
@@ -20,11 +17,7 @@ def to_dataframe(records: list[dict]):
         ) from None
     if not records:
         return pd.DataFrame()
-    df = pd.DataFrame(records)
-    for col in DATETIME_COLUMNS:
-        if col in df.columns:
-            df[col] = pd.to_datetime(df[col])
-    return df
+    return pd.DataFrame(records)
 
 
 def validate_format(fmt: str) -> None:
