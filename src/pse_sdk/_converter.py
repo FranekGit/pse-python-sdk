@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+from typing import Literal
+
+OutputFormat = Literal["dict", "dataframe"]
+
 DATETIME_COLUMNS = ["dtime", "publication_ts"]
 
 

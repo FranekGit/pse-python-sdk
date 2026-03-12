@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from pse_sdk._formats import OutputFormat, to_dataframe, validate_format
+from pse_sdk._converter import OutputFormat, to_dataframe, validate_format
 
 if TYPE_CHECKING:
     from pse_sdk._client import HTTPClient
