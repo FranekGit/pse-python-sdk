@@ -8,14 +8,14 @@ from tests.conftest import BASE_URL, make_page, make_record, parse_params
 
 def _make_endpoint():
     client = PSEClient(base_url=BASE_URL, page_size=100, timeout=5)
-    return client, BoundEndpoint(client, "price-cost", "business_date", "")
+    return client, BoundEndpoint(client, "price-cost", "business_date")
 
 
 def _make_split(value_columns=None):
     client = PSEClient(base_url=BASE_URL, page_size=100, timeout=5)
     return client, BoundSplit(
         client, "price-cost", "business_date",
-        value_columns or ["cen_cost"], "",
+        value_columns or ["cen_cost"],
     )
 
 

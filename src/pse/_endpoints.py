@@ -39,11 +39,10 @@ class BoundEndpoint:
     """Callable for full-endpoint queries."""
 
     def __init__(self, client: PSEClient, path: str,
-                 date_field: str, doc: str) -> None:
+                 date_field: str) -> None:
         self._client = client
         self._path = path
         self._date_field = date_field
-        self.__doc__ = doc
 
     def __call__(
         self,
@@ -66,13 +65,11 @@ class BoundSplit:
     """Callable for split-endpoint queries."""
 
     def __init__(self, client: PSEClient, path: str,
-                 date_field: str, value_columns: list[str],
-                 doc: str) -> None:
+                 date_field: str, value_columns: list[str]) -> None:
         self._client = client
         self._path = path
         self._date_field = date_field
         self._value_columns = value_columns
-        self.__doc__ = doc
 
     def __call__(
         self,
@@ -94,11 +91,9 @@ class BoundSplit:
 class Endpoint:
     """Descriptor for full-endpoint methods on PSE."""
 
-    def __init__(self, path: str, *, date_field: str = "business_date",
-                 doc: str = "") -> None:
+    def __init__(self, path: str, *, date_field: str = "business_date") -> None:
         self.path = path
         self.date_field = date_field
-        self.doc = doc
 
     def __set_name__(self, owner: type, name: str) -> None:
         self._attr = f"_bound_{name}"
@@ -108,7 +103,7 @@ class Endpoint:
             return self  # type: ignore[return-value]
         bound = getattr(obj, self._attr, None)
         if bound is None:
-            bound = BoundEndpoint(obj.client, self.path, self.date_field, self.doc)
+            bound = BoundEndpoint(obj.client, self.path, self.date_field)
             setattr(obj, self._attr, bound)
         return bound
 
@@ -117,11 +112,10 @@ class Split:
     """Descriptor for split-endpoint methods on PSE."""
 
     def __init__(self, path: str, value_columns: list[str], *,
-                 date_field: str = "business_date", doc: str = "") -> None:
+                 date_field: str = "business_date") -> None:
         self.path = path
         self.value_columns = value_columns
         self.date_field = date_field
-        self.doc = doc
 
     def __set_name__(self, owner: type, name: str) -> None:
         self._attr = f"_bound_{name}"
@@ -133,7 +127,7 @@ class Split:
         if bound is None:
             bound = BoundSplit(
                 obj.client, self.path, self.date_field,
-                self.value_columns, self.doc,
+                self.value_columns,
             )
             setattr(obj, self._attr, bound)
         return bound

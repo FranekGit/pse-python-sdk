@@ -15,13 +15,13 @@ class PSE:
     """
 
     # -- price-cost (split endpoint) --
-    get_price_cost = Endpoint("price-cost", doc="Price and cost data from the PSE balancing market.")
-    get_cen = Split("price-cost", ["cen_cost"], doc="CEN — settlement imbalance price")
-    get_ckoeb = Split("price-cost", ["ckoeb_cost"], doc="CKOeB — balancing energy cost")
-    get_ceb_sr = Split("price-cost", ["ceb_sr_cost"], doc="CEB_SR — avg balancing energy price")
-    get_cor_pp = Split("price-cost", ["cor_pp_cost"], doc="COR_PP — premium price correction")
-    get_imb_energy = Split("price-cost", ["imb_energy"], doc="Imbalance energy volume")
-    get_contracting = Split("price-cost", ["contracting"], doc="Contracting direction (long/short)")
+    get_price_cost = Endpoint("price-cost")
+    get_cen = Split("price-cost", ["cen_cost"])
+    get_ckoeb = Split("price-cost", ["ckoeb_cost"])
+    get_ceb_sr = Split("price-cost", ["ceb_sr_cost"])
+    get_cor_pp = Split("price-cost", ["cor_pp_cost"])
+    get_imb_energy = Split("price-cost", ["imb_energy"])
+    get_contracting = Split("price-cost", ["contracting"])
 
     def __init__(
         self,
