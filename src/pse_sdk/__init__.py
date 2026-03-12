@@ -2,5 +2,6 @@
 
 from pse_sdk._pse_client import PSEClient
 from pse_sdk._endpoints import Endpoint, EndpointSplit
+from pse_sdk._formats import OutputFormat
 
-__all__ = ["PSEClient", "Endpoint", "EndpointSplit"]
+__all__ = ["PSEClient", "Endpoint", "EndpointSplit", "OutputFormat"]

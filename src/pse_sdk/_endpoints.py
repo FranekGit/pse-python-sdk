@@ -1,45 +1,26 @@
 from __future__ import annotations
 
-from typing import Literal, TYPE_CHECKING
+from typing import TYPE_CHECKING
+
+from pse_sdk._formats import OutputFormat, to_dataframe, validate_format
 
 if TYPE_CHECKING:
     from pse_sdk._client import HTTPClient
 
 COMMON_COLUMNS = ["dtime", "period", "business_date", "publication_ts"]
-DATETIME_COLUMNS = ["dtime", "publication_ts"]
-
-
-def _validate_format(fmt: str) -> None:
-    if fmt not in ("dict", "dataframe"):
-        raise ValueError(f"format must be 'dict' or 'dataframe', got {fmt!r}")
 
 
 def _build_date_filter(date_field: str, start: str, end: str) -> str:
     return f"{date_field} ge '{start}' and {date_field} le '{end}'"
 
 
-def _to_dataframe(records: list[dict]):
-    try:
-        import pandas as pd
-    except ImportError:
-        raise ImportError(
-            "pandas is required for format='dataframe'. "
-            "Install it with: pip install pse-sdk[pandas]"
-        ) from None
-    if not records:
-        return pd.DataFrame()
-    df = pd.DataFrame(records)
-    for col in DATETIME_COLUMNS:
-        if col in df.columns:
-            df[col] = pd.to_datetime(df[col])
-    return df
-
-
 def _fetch_and_format(client, path, date_field, start, end, columns, fmt):
-    _validate_format(fmt)
+    validate_format(fmt)
     filter_expr = _build_date_filter(date_field, start, end)
     records = client.fetch_all(path, select=columns, filter_expr=filter_expr)
-    return _to_dataframe(records) if fmt == "dataframe" else records
+    if fmt == "dataframe":
+        return to_dataframe(records)
+    return records
 
 
 class EndpointQuery:
@@ -56,7 +37,7 @@ class EndpointQuery:
         start: str,
         end: str,
         columns: list[str] | None = None,
-        format: Literal["dict", "dataframe"] = "dict",
+        format: OutputFormat = "dict",
     ) -> list[dict]:
         return _fetch_and_format(
             self._client, self._path, self._date_field,
@@ -78,7 +59,7 @@ class EndpointSplitQuery:
         self,
         start: str,
         end: str,
-        format: Literal["dict", "dataframe"] = "dict",
+        format: OutputFormat = "dict",
     ) -> list[dict]:
         columns = list(COMMON_COLUMNS) + self._value_columns
         return _fetch_and_format(
