@@ -10,7 +10,9 @@ def _build_date_filter(date_field: str, start: str, end: str) -> str:
     return f"{date_field} ge '{start}' and {date_field} le '{end}'"
 
 
-def _fetch_and_format(client, path, date_field, start, end, select_columns, output_format):
+def _fetch_and_format(
+    client, path, date_field, start, end, select_columns, output_format
+):
     validate_format(output_format)
     filter_expr = _build_date_filter(date_field, start, end)
     records = client.fetch_all(path, select=select_columns, filter_expr=filter_expr)
