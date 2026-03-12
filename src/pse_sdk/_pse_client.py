@@ -18,14 +18,6 @@ class PSEClient:
         df = pse.get_price_cost("2024-01-01", "2024-01-31", format="dataframe")
     """
 
-    get_price_cost = Endpoint("price-cost")
-    get_cen = Endpoint("price-cost", ["cen_cost"])
-    get_ckoeb = Endpoint("price-cost", ["ckoeb_cost"])
-    get_ceb_sr = Endpoint("price-cost", ["ceb_sr_cost"])
-    get_cor_pp = Endpoint("price-cost", ["cor_pp_cost"])
-    get_imb_energy = Endpoint("price-cost", ["imb_energy"])
-    get_contracting = Endpoint("price-cost", ["contracting"])
-
     def __init__(
         self,
         base_url: str = "https://api.raporty.pse.pl/api",
@@ -37,3 +29,10 @@ class PSEClient:
             page_size=page_size,
             timeout=timeout,
         )
+        self.get_price_cost = Endpoint(self.client, "price-cost")
+        self.get_cen = Endpoint(self.client, "price-cost", ["cen_cost"])
+        self.get_ckoeb = Endpoint(self.client, "price-cost", ["ckoeb_cost"])
+        self.get_ceb_sr = Endpoint(self.client, "price-cost", ["ceb_sr_cost"])
+        self.get_cor_pp = Endpoint(self.client, "price-cost", ["cor_pp_cost"])
+        self.get_imb_energy = Endpoint(self.client, "price-cost", ["imb_energy"])
+        self.get_contracting = Endpoint(self.client, "price-cost", ["contracting"])

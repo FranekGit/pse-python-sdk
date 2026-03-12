@@ -2,19 +2,19 @@ import pytest
 import responses
 
 from pse_sdk._client import HTTPClient
-from pse_sdk._endpoints import EndpointQuery
+from pse_sdk._endpoints import Endpoint
 from tests.conftest import BASE_URL, make_page, make_record, parse_params
 
 
 def _make_endpoint():
     client = HTTPClient(base_url=BASE_URL, page_size=100, timeout=5)
-    return client, EndpointQuery(client, "price-cost", "business_date")
+    return client, Endpoint(client, "price-cost")
 
 
 def _make_split(value_columns=None):
     client = HTTPClient(base_url=BASE_URL, page_size=100, timeout=5)
-    return client, EndpointQuery(
-        client, "price-cost", "business_date",
+    return client, Endpoint(
+        client, "price-cost",
         value_columns or ["cen_cost"],
     )
 
