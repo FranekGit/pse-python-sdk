@@ -29,12 +29,14 @@ class PSEClient:
     get_imb_energy = EndpointSplit("price-cost", ["imb_energy"])
     get_contracting = EndpointSplit("price-cost", ["contracting"])
 
-    _BASE_URL = "https://api.raporty.pse.pl/api"
-    _PAGE_SIZE = 100
-
-    def __init__(self, timeout: int = 30):
+    def __init__(
+        self,
+        base_url: str = "https://api.raporty.pse.pl/api",
+        page_size: int = 100,
+        timeout: int = 30,
+    ):
         self.client = HTTPClient(
-            base_url=self._BASE_URL,
-            page_size=self._PAGE_SIZE,
+            base_url=base_url,
+            page_size=page_size,
             timeout=timeout,
         )
