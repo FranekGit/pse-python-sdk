@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Literal, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from pse._client import PSEClient
+    from pse._client import HTTPClient
 
 COMMON_COLUMNS = ["dtime", "period", "business_date", "publication_ts"]
 DATETIME_COLUMNS = ["dtime", "publication_ts"]
@@ -38,7 +38,7 @@ def _to_dataframe(records: list[dict]):
 class BoundEndpoint:
     """Callable for full-endpoint queries."""
 
-    def __init__(self, client: PSEClient, path: str,
+    def __init__(self, client: HTTPClient, path: str,
                  date_field: str) -> None:
         self._client = client
         self._path = path
@@ -64,7 +64,7 @@ class BoundEndpoint:
 class BoundSplit:
     """Callable for split-endpoint queries."""
 
-    def __init__(self, client: PSEClient, path: str,
+    def __init__(self, client: HTTPClient, path: str,
                  date_field: str, value_columns: list[str]) -> None:
         self._client = client
         self._path = path
@@ -89,7 +89,7 @@ class BoundSplit:
 
 
 class Endpoint:
-    """Descriptor for full-endpoint methods on PSE."""
+    """Descriptor for full-endpoint methods on PSEClient."""
 
     def __init__(self, path: str, *, date_field: str = "business_date") -> None:
         self.path = path
@@ -109,7 +109,7 @@ class Endpoint:
 
 
 class Split:
-    """Descriptor for split-endpoint methods on PSE."""
+    """Descriptor for split-endpoint methods on PSEClient."""
 
     def __init__(self, path: str, value_columns: list[str], *,
                  date_field: str = "business_date") -> None:

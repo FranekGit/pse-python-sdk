@@ -1,6 +1,6 @@
 import responses
 
-from pse import PSE
+from pse import PSEClient
 from tests.conftest import BASE_URL, make_page, make_record
 
 

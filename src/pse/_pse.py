@@ -1,16 +1,16 @@
 from __future__ import annotations
 
-from pse._client import PSEClient
+from pse._client import HTTPClient
 from pse._endpoints import Endpoint, Split
 
 
-class PSE:
+class PSEClient:
     """Main entry point for the PSE API.
 
     Usage::
 
-        from pse import PSE
-        pse = PSE()
+        from pse import PSEClient
+        pse = PSEClient()
         records = pse.get_cen("2024-01-01", "2024-01-31")
     """
 
@@ -29,4 +29,4 @@ class PSE:
         page_size: int = 100,
         timeout: int = 30,
     ):
-        self.client = PSEClient(base_url=base_url, page_size=page_size, timeout=timeout)
+        self.client = HTTPClient(base_url=base_url, page_size=page_size, timeout=timeout)

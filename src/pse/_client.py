@@ -3,7 +3,7 @@ from __future__ import annotations
 import requests
 
 
-class PSEClient:
+class HTTPClient:
     """Low-level HTTP client for the PSE API with OData pagination."""
 
     def __init__(

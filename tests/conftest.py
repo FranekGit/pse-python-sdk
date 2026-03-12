@@ -2,20 +2,20 @@ from urllib.parse import parse_qs, urlparse
 
 import pytest
 
-from pse import PSE
-from pse._client import PSEClient
+from pse import PSEClient
+from pse._client import HTTPClient
 
 BASE_URL = "https://api.raporty.pse.pl/api"
 
 
 @pytest.fixture
 def client():
-    return PSEClient(base_url=BASE_URL, page_size=2, timeout=5)
+    return HTTPClient(base_url=BASE_URL, page_size=2, timeout=5)
 
 
 @pytest.fixture
 def pse():
-    return PSE(base_url=BASE_URL, page_size=2, timeout=5)
+    return PSEClient(base_url=BASE_URL, page_size=2, timeout=5)
 
 
 def make_record(period=1, business_date="2024-01-01", cen_cost=100.0, **extra):
