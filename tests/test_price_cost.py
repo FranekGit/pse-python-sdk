@@ -2,21 +2,33 @@ import pytest
 import responses
 
 from pse._client import PSEClient
-from pse.endpoints.price_cost import PriceCost
+from pse._endpoints import BoundEndpoint, BoundSplit
 from tests.conftest import BASE_URL, make_page, make_record, parse_params
+
+
+def _make_endpoint():
+    client = PSEClient(base_url=BASE_URL, page_size=100, timeout=5)
+    return client, BoundEndpoint(client, "price-cost", "business_date", "")
+
+
+def _make_split(value_columns=None):
+    client = PSEClient(base_url=BASE_URL, page_size=100, timeout=5)
+    return client, BoundSplit(
+        client, "price-cost", "business_date",
+        value_columns or ["cen_cost"], "",
+    )
 
 
 @responses.activate
 def test_query_returns_list_of_dicts():
-    client = PSEClient(base_url=BASE_URL, page_size=100, timeout=5)
-    ep = PriceCost(client)
+    _, ep = _make_endpoint()
 
     responses.add(
         responses.GET,
         f"{BASE_URL}/price-cost",
         json=make_page([make_record()]),
     )
-    result = ep.query("2024-01-01", "2024-01-01")
+    result = ep("2024-01-01", "2024-01-01")
     assert isinstance(result, list)
     assert len(result) == 1
     assert result[0]["cen_cost"] == 100.0
@@ -24,15 +36,14 @@ def test_query_returns_list_of_dicts():
 
 @responses.activate
 def test_query_dataframe_returns_dataframe_with_parsed_datetimes():
-    client = PSEClient(base_url=BASE_URL, page_size=100, timeout=5)
-    ep = PriceCost(client)
+    _, ep = _make_endpoint()
 
     responses.add(
         responses.GET,
         f"{BASE_URL}/price-cost",
         json=make_page([make_record()]),
     )
-    df = ep.query("2024-01-01", "2024-01-01", format="dataframe")
+    df = ep("2024-01-01", "2024-01-01", format="dataframe")
     assert len(df) == 1
     assert "datetime64" in str(df["dtime"].dtype)
     assert "datetime64" in str(df["publication_ts"].dtype)
@@ -41,8 +52,7 @@ def test_query_dataframe_returns_dataframe_with_parsed_datetimes():
 
 @responses.activate
 def test_query_split_selects_correct_columns():
-    client = PSEClient(base_url=BASE_URL, page_size=100, timeout=5)
-    ep = PriceCost(client)
+    _, split = _make_split(["cen_cost"])
 
     responses.add(
         responses.GET,
@@ -55,7 +65,7 @@ def test_query_split_selects_correct_columns():
             "cen_cost": 100.0,
         }]),
     )
-    result = ep.query_split(["cen_cost"], "2024-01-01", "2024-01-01")
+    result = split("2024-01-01", "2024-01-01")
     assert isinstance(result, list)
     assert "cen_cost" in result[0]
 
@@ -68,8 +78,7 @@ def test_query_split_selects_correct_columns():
 
 @responses.activate
 def test_query_split_dataframe():
-    client = PSEClient(base_url=BASE_URL, page_size=100, timeout=5)
-    ep = PriceCost(client)
+    _, split = _make_split(["cen_cost"])
 
     responses.add(
         responses.GET,
@@ -82,66 +91,53 @@ def test_query_split_dataframe():
             "cen_cost": 100.0,
         }]),
     )
-    df = ep.query_split(["cen_cost"], "2024-01-01", "2024-01-01", format="dataframe")
+    df = split("2024-01-01", "2024-01-01", format="dataframe")
     assert "cen_cost" in df.columns
 
 
 @responses.activate
 def test_query_empty_returns_empty_list():
-    client = PSEClient(base_url=BASE_URL, page_size=100, timeout=5)
-    ep = PriceCost(client)
+    _, ep = _make_endpoint()
 
     responses.add(
         responses.GET,
         f"{BASE_URL}/price-cost",
         json=make_page([]),
     )
-    result = ep.query("2024-01-01", "2024-01-01")
+    result = ep("2024-01-01", "2024-01-01")
     assert result == []
 
 
 @responses.activate
 def test_query_empty_dataframe():
-    client = PSEClient(base_url=BASE_URL, page_size=100, timeout=5)
-    ep = PriceCost(client)
+    _, ep = _make_endpoint()
 
     responses.add(
         responses.GET,
         f"{BASE_URL}/price-cost",
         json=make_page([]),
     )
-    df = ep.query("2024-01-01", "2024-01-01", format="dataframe")
+    df = ep("2024-01-01", "2024-01-01", format="dataframe")
     assert len(df) == 0
 
 
 def test_query_invalid_format_raises_value_error():
-    client = PSEClient(base_url=BASE_URL, page_size=100, timeout=5)
-    ep = PriceCost(client)
+    _, ep = _make_endpoint()
 
     with pytest.raises(ValueError, match="format must be"):
-        ep.query("2024-01-01", "2024-01-01", format="csv")
+        ep("2024-01-01", "2024-01-01", format="csv")
 
 
 @responses.activate
 def test_date_filter_format():
-    client = PSEClient(base_url=BASE_URL, page_size=100, timeout=5)
-    ep = PriceCost(client)
+    _, ep = _make_endpoint()
 
     responses.add(
         responses.GET,
         f"{BASE_URL}/price-cost",
         json=make_page([]),
     )
-    ep.query("2024-06-01", "2024-06-30")
+    ep("2024-06-01", "2024-06-30")
 
     params = parse_params(responses.calls[0].request.url)
     assert params["$filter"] == "business_date ge '2024-06-01' and business_date le '2024-06-30'"
-
-
-def test_price_cost_has_correct_splits():
-    assert PriceCost.path == "price-cost"
-    assert PriceCost.method_name == "get_price_cost"
-    assert len(PriceCost.splits) == 6
-    names = [s.method_name for s in PriceCost.splits]
-    assert "get_cen" in names
-    assert "get_ckoeb" in names
