@@ -1,11 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
+from pse_sdk._client import HTTPClient
 from pse_sdk._converter import OutputFormat, to_dataframe, validate_format
-
-if TYPE_CHECKING:
-    from pse_sdk._client import HTTPClient
 
 COMMON_COLUMNS = ["dtime", "period", "business_date", "publication_ts"]
 
@@ -26,8 +22,7 @@ def _fetch_and_format(client, path, date_field, start, end, columns, fmt):
 class EndpointQuery:
     """Callable for full-endpoint queries."""
 
-    def __init__(self, client: HTTPClient, path: str,
-                 date_field: str) -> None:
+    def __init__(self, client: HTTPClient, path: str, date_field: str) -> None:
         self._client = client
         self._path = path
         self._date_field = date_field
@@ -40,16 +35,22 @@ class EndpointQuery:
         format: OutputFormat = "dict",
     ) -> list[dict]:
         return _fetch_and_format(
-            self._client, self._path, self._date_field,
-            start, end, columns, format,
+            self._client,
+            self._path,
+            self._date_field,
+            start,
+            end,
+            columns,
+            format,
         )
 
 
 class EndpointSplitQuery:
     """Callable for split-endpoint queries."""
 
-    def __init__(self, client: HTTPClient, path: str,
-                 date_field: str, value_columns: list[str]) -> None:
+    def __init__(
+        self, client: HTTPClient, path: str, date_field: str, value_columns: list[str]
+    ) -> None:
         self._client = client
         self._path = path
         self._date_field = date_field
@@ -63,8 +64,13 @@ class EndpointSplitQuery:
     ) -> list[dict]:
         columns = list(COMMON_COLUMNS) + self._value_columns
         return _fetch_and_format(
-            self._client, self._path, self._date_field,
-            start, end, columns, format,
+            self._client,
+            self._path,
+            self._date_field,
+            start,
+            end,
+            columns,
+            format,
         )
 
 
@@ -99,14 +105,17 @@ class Endpoint(_BaseDescriptor):
 class EndpointSplit(_BaseDescriptor):
     """Descriptor for split-endpoint methods on PSEClient."""
 
-    def __init__(self, path: str, value_columns: list[str], *,
-                 date_field: str = "business_date") -> None:
+    def __init__(
+        self, path: str, value_columns: list[str], *, date_field: str = "business_date"
+    ) -> None:
         self.path = path
         self.value_columns = value_columns
         self.date_field = date_field
 
     def _make_query(self, obj) -> EndpointSplitQuery:
         return EndpointSplitQuery(
-            obj.client, self.path, self.date_field,
+            obj.client,
+            self.path,
+            self.date_field,
             self.value_columns,
         )
