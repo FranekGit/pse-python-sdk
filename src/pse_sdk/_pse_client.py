@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pse_sdk._client import HTTPClient
-from pse_sdk._endpoints import Endpoint
+from pse_sdk._endpoints import make_endpoint
 
 
 class PSEClient:
@@ -29,11 +29,11 @@ class PSEClient:
             page_size=page_size,
             timeout=timeout,
         )
-        self._endpoint = Endpoint(self.client)
 
-        self.get_cen = self._endpoint.query("price-cost", ["cen_cost"])
-        self.get_ckoeb = self._endpoint.query("price-cost", ["ckoeb_cost"])
-        self.get_ceb_sr = self._endpoint.query("price-cost", ["ceb_sr_cost"])
-        self.get_cor_pp = self._endpoint.query("price-cost", ["cor_pp_cost"])
-        self.get_imb_energy = self._endpoint.query("price-cost", ["imb_energy"])
-        self.get_contracting = self._endpoint.query("price-cost", ["contracting"])
+        self.get_price_cost = make_endpoint(self.client, "price-cost")
+        self.get_cen = make_endpoint(self.client, "price-cost", ["cen_cost"])
+        self.get_ckoeb = make_endpoint(self.client, "price-cost", ["ckoeb_cost"])
+        self.get_ceb_sr = make_endpoint(self.client, "price-cost", ["ceb_sr_cost"])
+        self.get_cor_pp = make_endpoint(self.client, "price-cost", ["cor_pp_cost"])
+        self.get_imb_energy = make_endpoint(self.client, "price-cost", ["imb_energy"])
+        self.get_contracting = make_endpoint(self.client, "price-cost", ["contracting"])

@@ -2,13 +2,13 @@ import pytest
 import responses
 
 from pse_sdk._client import HTTPClient
-from pse_sdk._endpoints import Endpoint
+from pse_sdk._endpoints import make_endpoint
 from tests.conftest import BASE_URL, make_page, make_record, parse_params
 
 
-def _make_endpoint():
+def _make_endpoint(path="price-cost", columns=None):
     client = HTTPClient(base_url=BASE_URL, page_size=100, timeout=5)
-    return client, Endpoint(client)
+    return client, make_endpoint(client, path, columns)
 
 
 @responses.activate
@@ -20,7 +20,7 @@ def test_query_returns_list_of_dicts():
         f"{BASE_URL}/price-cost",
         json=make_page([make_record()]),
     )
-    result = ep("price-cost", "2024-01-01", "2024-01-01")
+    result = ep("2024-01-01", "2024-01-01")
     assert isinstance(result, list)
     assert len(result) == 1
     assert result[0]["cen_cost"] == 100.0
@@ -35,7 +35,7 @@ def test_query_dataframe_returns_dataframe_with_parsed_datetimes():
         f"{BASE_URL}/price-cost",
         json=make_page([make_record()]),
     )
-    df = ep("price-cost", "2024-01-01", "2024-01-01", format="dataframe")
+    df = ep("2024-01-01", "2024-01-01", format="dataframe")
     assert len(df) == 1
     assert "datetime64" in str(df["dtime"].dtype)
     assert "datetime64" in str(df["publication_ts"].dtype)
@@ -44,7 +44,7 @@ def test_query_dataframe_returns_dataframe_with_parsed_datetimes():
 
 @responses.activate
 def test_query_split_selects_correct_columns():
-    _, ep = _make_endpoint()
+    _, ep = _make_endpoint(columns=["cen_cost"])
 
     responses.add(
         responses.GET,
@@ -57,7 +57,7 @@ def test_query_split_selects_correct_columns():
             "cen_cost": 100.0,
         }]),
     )
-    result = ep("price-cost", "2024-01-01", "2024-01-01", columns=["cen_cost"])
+    result = ep("2024-01-01", "2024-01-01")
     assert isinstance(result, list)
     assert "cen_cost" in result[0]
 
@@ -70,7 +70,7 @@ def test_query_split_selects_correct_columns():
 
 @responses.activate
 def test_query_split_dataframe():
-    _, ep = _make_endpoint()
+    _, ep = _make_endpoint(columns=["cen_cost"])
 
     responses.add(
         responses.GET,
@@ -83,7 +83,7 @@ def test_query_split_dataframe():
             "cen_cost": 100.0,
         }]),
     )
-    df = ep("price-cost", "2024-01-01", "2024-01-01", columns=["cen_cost"], format="dataframe")
+    df = ep("2024-01-01", "2024-01-01", format="dataframe")
     assert "cen_cost" in df.columns
 
 
@@ -96,7 +96,7 @@ def test_query_empty_returns_empty_list():
         f"{BASE_URL}/price-cost",
         json=make_page([]),
     )
-    result = ep("price-cost", "2024-01-01", "2024-01-01")
+    result = ep("2024-01-01", "2024-01-01")
     assert result == []
 
 
@@ -109,7 +109,7 @@ def test_query_empty_dataframe():
         f"{BASE_URL}/price-cost",
         json=make_page([]),
     )
-    df = ep("price-cost", "2024-01-01", "2024-01-01", format="dataframe")
+    df = ep("2024-01-01", "2024-01-01", format="dataframe")
     assert len(df) == 0
 
 
@@ -117,7 +117,7 @@ def test_query_invalid_format_raises_value_error():
     _, ep = _make_endpoint()
 
     with pytest.raises(ValueError, match="format must be"):
-        ep("price-cost", "2024-01-01", "2024-01-01", format="csv")
+        ep("2024-01-01", "2024-01-01", format="csv")
 
 
 @responses.activate
@@ -129,7 +129,7 @@ def test_date_filter_format():
         f"{BASE_URL}/price-cost",
         json=make_page([]),
     )
-    ep("price-cost", "2024-06-01", "2024-06-30")
+    ep("2024-06-01", "2024-06-30")
 
     params = parse_params(responses.calls[0].request.url)
     assert params["$filter"] == "business_date ge '2024-06-01' and business_date le '2024-06-30'"
