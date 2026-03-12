@@ -10,11 +10,11 @@ def _build_date_filter(date_field: str, start: str, end: str) -> str:
     return f"{date_field} ge '{start}' and {date_field} le '{end}'"
 
 
-def _fetch_and_format(client, path, date_field, start, end, columns, fmt):
-    validate_format(fmt)
+def _fetch_and_format(client, path, date_field, start, end, select_columns, output_format):
+    validate_format(output_format)
     filter_expr = _build_date_filter(date_field, start, end)
-    records = client.fetch_all(path, select=columns, filter_expr=filter_expr)
-    if fmt == "dataframe":
+    records = client.fetch_all(path, select=select_columns, filter_expr=filter_expr)
+    if output_format == "dataframe":
         return to_dataframe(records)
     return records
 
@@ -40,8 +40,8 @@ class EndpointQuery:
             self._date_field,
             start,
             end,
-            columns,
-            format,
+            select_columns=columns,
+            output_format=format,
         )
 
 
@@ -62,32 +62,32 @@ class EndpointSplitQuery:
         end: str,
         format: OutputFormat = "dict",
     ) -> list[dict]:
-        columns = list(COMMON_COLUMNS) + self._value_columns
+        select_columns = list(COMMON_COLUMNS) + self._value_columns
         return _fetch_and_format(
             self._client,
             self._path,
             self._date_field,
             start,
             end,
-            columns,
-            format,
+            select_columns,
+            output_format=format,
         )
 
 
 class _BaseDescriptor:
     def __set_name__(self, owner: type, name: str) -> None:
-        self._attr = f"_bound_{name}"
+        self._cache_attr = f"_bound_{name}"
 
-    def __get__(self, obj: object, objtype: type | None = None):
-        if obj is None:
+    def __get__(self, instance: object, owner_type: type | None = None):
+        if instance is None:
             return self
-        bound = getattr(obj, self._attr, None)
-        if bound is None:
-            bound = self._make_query(obj)
-            setattr(obj, self._attr, bound)
-        return bound
+        cached_query = getattr(instance, self._cache_attr, None)
+        if cached_query is None:
+            cached_query = self._make_query(instance)
+            setattr(instance, self._cache_attr, cached_query)
+        return cached_query
 
-    def _make_query(self, obj):
+    def _make_query(self, instance):
         raise NotImplementedError
 
 
@@ -98,8 +98,8 @@ class Endpoint(_BaseDescriptor):
         self.path = path
         self.date_field = date_field
 
-    def _make_query(self, obj) -> EndpointQuery:
-        return EndpointQuery(obj.client, self.path, self.date_field)
+    def _make_query(self, instance) -> EndpointQuery:
+        return EndpointQuery(instance.client, self.path, self.date_field)
 
 
 class EndpointSplit(_BaseDescriptor):
@@ -112,9 +112,9 @@ class EndpointSplit(_BaseDescriptor):
         self.value_columns = value_columns
         self.date_field = date_field
 
-    def _make_query(self, obj) -> EndpointSplitQuery:
+    def _make_query(self, instance) -> EndpointSplitQuery:
         return EndpointSplitQuery(
-            obj.client,
+            instance.client,
             self.path,
             self.date_field,
             self.value_columns,
