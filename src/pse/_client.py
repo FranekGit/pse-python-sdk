@@ -8,9 +8,9 @@ class HTTPClient:
 
     def __init__(
         self,
-        base_url: str = "https://api.raporty.pse.pl/api",
-        page_size: int = 100,
-        timeout: int = 30,
+        base_url: str,
+        page_size: int,
+        timeout: int,
     ):
         self.base_url = base_url.rstrip("/")
         self.page_size = page_size
