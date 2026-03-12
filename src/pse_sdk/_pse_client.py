@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pse_sdk._client import HTTPClient
-from pse_sdk._endpoints import make_endpoint
+from pse_sdk._endpoint_factory import make_endpoint
 
 
 class PSEClient:
