@@ -35,6 +35,13 @@ def _to_dataframe(records: list[dict]):
     return df
 
 
+def _fetch_and_format(client, path, date_field, start, end, columns, fmt):
+    _validate_format(fmt)
+    filter_expr = _build_date_filter(date_field, start, end)
+    records = client.fetch_all(path, select=columns, filter_expr=filter_expr)
+    return _to_dataframe(records) if fmt == "dataframe" else records
+
+
 class EndpointQuery:
     """Callable for full-endpoint queries."""
 
@@ -51,14 +58,10 @@ class EndpointQuery:
         columns: list[str] | None = None,
         format: Literal["dict", "dataframe"] = "dict",
     ) -> list[dict]:
-        _validate_format(format)
-        filter_expr = _build_date_filter(self._date_field, start, end)
-        records = self._client.fetch_all(
-            self._path, select=columns, filter_expr=filter_expr,
+        return _fetch_and_format(
+            self._client, self._path, self._date_field,
+            start, end, columns, format,
         )
-        if format == "dataframe":
-            return _to_dataframe(records)
-        return records
 
 
 class EndpointSplitQuery:
@@ -77,38 +80,42 @@ class EndpointSplitQuery:
         end: str,
         format: Literal["dict", "dataframe"] = "dict",
     ) -> list[dict]:
-        _validate_format(format)
         columns = list(COMMON_COLUMNS) + self._value_columns
-        filter_expr = _build_date_filter(self._date_field, start, end)
-        records = self._client.fetch_all(
-            self._path, select=columns, filter_expr=filter_expr,
+        return _fetch_and_format(
+            self._client, self._path, self._date_field,
+            start, end, columns, format,
         )
-        if format == "dataframe":
-            return _to_dataframe(records)
-        return records
 
 
-class Endpoint:
+class _BaseDescriptor:
+    def __set_name__(self, owner: type, name: str) -> None:
+        self._attr = f"_bound_{name}"
+
+    def __get__(self, obj: object, objtype: type | None = None):
+        if obj is None:
+            return self
+        bound = getattr(obj, self._attr, None)
+        if bound is None:
+            bound = self._make_query(obj)
+            setattr(obj, self._attr, bound)
+        return bound
+
+    def _make_query(self, obj):
+        raise NotImplementedError
+
+
+class Endpoint(_BaseDescriptor):
     """Descriptor for full-endpoint methods on PSEClient."""
 
     def __init__(self, path: str, *, date_field: str = "business_date") -> None:
         self.path = path
         self.date_field = date_field
 
-    def __set_name__(self, owner: type, name: str) -> None:
-        self._attr = f"_bound_{name}"
-
-    def __get__(self, obj: object, objtype: type | None = None) -> EndpointQuery:
-        if obj is None:
-            return self  # type: ignore[return-value]
-        bound = getattr(obj, self._attr, None)
-        if bound is None:
-            bound = EndpointQuery(obj.client, self.path, self.date_field)
-            setattr(obj, self._attr, bound)
-        return bound
+    def _make_query(self, obj) -> EndpointQuery:
+        return EndpointQuery(obj.client, self.path, self.date_field)
 
 
-class EndpointSplit:
+class EndpointSplit(_BaseDescriptor):
     """Descriptor for split-endpoint methods on PSEClient."""
 
     def __init__(self, path: str, value_columns: list[str], *,
@@ -117,17 +124,8 @@ class EndpointSplit:
         self.value_columns = value_columns
         self.date_field = date_field
 
-    def __set_name__(self, owner: type, name: str) -> None:
-        self._attr = f"_bound_{name}"
-
-    def __get__(self, obj: object, objtype: type | None = None) -> EndpointSplitQuery:
-        if obj is None:
-            return self  # type: ignore[return-value]
-        bound = getattr(obj, self._attr, None)
-        if bound is None:
-            bound = EndpointSplitQuery(
-                obj.client, self.path, self.date_field,
-                self.value_columns,
-            )
-            setattr(obj, self._attr, bound)
-        return bound
+    def _make_query(self, obj) -> EndpointSplitQuery:
+        return EndpointSplitQuery(
+            obj.client, self.path, self.date_field,
+            self.value_columns,
+        )
