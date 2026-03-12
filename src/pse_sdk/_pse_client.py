@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pse_sdk._client import HTTPClient
-from pse_sdk._endpoints import Endpoint, EndpointSplit
+from pse_sdk._endpoints import Endpoint
 
 
 class PSEClient:
@@ -18,16 +18,13 @@ class PSEClient:
         df = pse.get_price_cost("2024-01-01", "2024-01-31", format="dataframe")
     """
 
-    # -- full endpoints --
     get_price_cost = Endpoint("price-cost")
-
-    # -- price-cost endpoint slices --
-    get_cen = EndpointSplit("price-cost", ["cen_cost"])
-    get_ckoeb = EndpointSplit("price-cost", ["ckoeb_cost"])
-    get_ceb_sr = EndpointSplit("price-cost", ["ceb_sr_cost"])
-    get_cor_pp = EndpointSplit("price-cost", ["cor_pp_cost"])
-    get_imb_energy = EndpointSplit("price-cost", ["imb_energy"])
-    get_contracting = EndpointSplit("price-cost", ["contracting"])
+    get_cen = Endpoint("price-cost", ["cen_cost"])
+    get_ckoeb = Endpoint("price-cost", ["ckoeb_cost"])
+    get_ceb_sr = Endpoint("price-cost", ["ceb_sr_cost"])
+    get_cor_pp = Endpoint("price-cost", ["cor_pp_cost"])
+    get_imb_energy = Endpoint("price-cost", ["imb_energy"])
+    get_contracting = Endpoint("price-cost", ["contracting"])
 
     def __init__(
         self,
