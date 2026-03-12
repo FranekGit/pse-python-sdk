@@ -35,7 +35,7 @@ def _to_dataframe(records: list[dict]):
     return df
 
 
-class BoundEndpoint:
+class EndpointQuery:
     """Callable for full-endpoint queries."""
 
     def __init__(self, client: HTTPClient, path: str,
@@ -61,7 +61,7 @@ class BoundEndpoint:
         return records
 
 
-class BoundSplit:
+class EndpointSplitQuery:
     """Callable for split-endpoint queries."""
 
     def __init__(self, client: HTTPClient, path: str,
@@ -98,17 +98,17 @@ class Endpoint:
     def __set_name__(self, owner: type, name: str) -> None:
         self._attr = f"_bound_{name}"
 
-    def __get__(self, obj: object, objtype: type | None = None) -> BoundEndpoint:
+    def __get__(self, obj: object, objtype: type | None = None) -> EndpointQuery:
         if obj is None:
             return self  # type: ignore[return-value]
         bound = getattr(obj, self._attr, None)
         if bound is None:
-            bound = BoundEndpoint(obj.client, self.path, self.date_field)
+            bound = EndpointQuery(obj.client, self.path, self.date_field)
             setattr(obj, self._attr, bound)
         return bound
 
 
-class Split:
+class EndpointSplit:
     """Descriptor for split-endpoint methods on PSEClient."""
 
     def __init__(self, path: str, value_columns: list[str], *,
@@ -120,12 +120,12 @@ class Split:
     def __set_name__(self, owner: type, name: str) -> None:
         self._attr = f"_bound_{name}"
 
-    def __get__(self, obj: object, objtype: type | None = None) -> BoundSplit:
+    def __get__(self, obj: object, objtype: type | None = None) -> EndpointSplitQuery:
         if obj is None:
             return self  # type: ignore[return-value]
         bound = getattr(obj, self._attr, None)
         if bound is None:
-            bound = BoundSplit(
+            bound = EndpointSplitQuery(
                 obj.client, self.path, self.date_field,
                 self.value_columns,
             )
