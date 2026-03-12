@@ -29,10 +29,11 @@ class PSEClient:
             page_size=page_size,
             timeout=timeout,
         )
-        self.get_price_cost = Endpoint(self.client, "price-cost")
-        self.get_cen = Endpoint(self.client, "price-cost", ["cen_cost"])
-        self.get_ckoeb = Endpoint(self.client, "price-cost", ["ckoeb_cost"])
-        self.get_ceb_sr = Endpoint(self.client, "price-cost", ["ceb_sr_cost"])
-        self.get_cor_pp = Endpoint(self.client, "price-cost", ["cor_pp_cost"])
-        self.get_imb_energy = Endpoint(self.client, "price-cost", ["imb_energy"])
-        self.get_contracting = Endpoint(self.client, "price-cost", ["contracting"])
+        self._endpoint = Endpoint(self.client)
+
+        self.get_cen = self._endpoint.query("price-cost", ["cen_cost"])
+        self.get_ckoeb = self._endpoint.query("price-cost", ["ckoeb_cost"])
+        self.get_ceb_sr = self._endpoint.query("price-cost", ["ceb_sr_cost"])
+        self.get_cor_pp = self._endpoint.query("price-cost", ["cor_pp_cost"])
+        self.get_imb_energy = self._endpoint.query("price-cost", ["imb_energy"])
+        self.get_contracting = self._endpoint.query("price-cost", ["contracting"])
