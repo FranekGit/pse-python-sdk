@@ -26,3 +26,11 @@ def validate_format(fmt: str) -> None:
         raise ValueError(
             f"format must be 'dict' or 'dataframe', got {fmt!r}"
         )
+
+
+def convert(records: list[dict], fmt: OutputFormat = "dict"):
+    """Validate *fmt*, then return *records* in the requested format."""
+    validate_format(fmt)
+    if fmt == "dataframe":
+        return to_dataframe(records)
+    return records
