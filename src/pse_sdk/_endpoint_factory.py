@@ -17,11 +17,14 @@ def make_endpoint(client: HTTPClient, path: str, columns: list[str] | None = Non
         """Query PSE data for a date range.
 
         Args:
-            start: Start date (inclusive). Accepts ``str``, ``datetime.date``,
-                or ``datetime.datetime``. Strings may use ``YYYY-MM-DD``,
-                ``YYYY/MM/DD``, or ``YYYYMMDD`` format.
-            end: End date (inclusive). Same types as *start*.
-            format: ``"dict"`` for list of dicts, ``"dataframe"`` for pandas DataFrame.
+            start: Begin of range (``str``, ``date``, or ``datetime``).
+            end: End of range (``str``, ``date``, or ``datetime``).
+            format: Output format — ``"dict"`` (default) or ``"dataframe"``.
+
+        Raises:
+            TypeError: If *start* or *end* is not a supported type.
+            ValueError: If a date string cannot be parsed, or *start* is
+                after *end*.
         """
         start_str, end_str = normalize_date_range(start, end)
         filter_expr = f"business_date ge '{start_str}' and business_date le '{end_str}'"
