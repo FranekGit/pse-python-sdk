@@ -5,7 +5,7 @@ from typing import Union
 
 DateLike = Union[str, datetime.date, datetime.datetime]
 
-_FORMATS = ["%Y-%m-%d", "%Y/%m/%d", "%Y%m%d"]
+DATE_FORMATS = ["%Y-%m-%d", "%Y/%m/%d", "%Y%m%d"]
 
 
 def normalize_date(value: DateLike, param_name: str) -> str:
@@ -29,13 +29,13 @@ def normalize_date(value: DateLike, param_name: str) -> str:
         )
 
     value = value.strip()
-    for fmt in _FORMATS:
+    for fmt in DATE_FORMATS:
         try:
             return datetime.datetime.strptime(value, fmt).date().isoformat()
         except ValueError:
             continue
 
-    accepted = ", ".join(f"'{f}'" for f in _FORMATS)
+    accepted = ", ".join(f"'{f}'" for f in DATE_FORMATS)
     raise ValueError(
         f"{param_name}: unable to parse date {value!r}. "
         f"Accepted formats: {accepted}"
