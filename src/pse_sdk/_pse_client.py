@@ -18,15 +18,13 @@ class PSEClient:
         df = pse.get_price_cost("2024-01-01", "2024-01-31", format="dataframe")
     """
 
-    def __init__(
-        self,
-        base_url: str = "https://api.raporty.pse.pl/api",
-        page_size: int = 100,
-        timeout: int = 30,
-    ):
+    _BASE_URL = "https://api.raporty.pse.pl/api"
+    _PAGE_SIZE = 100
+
+    def __init__(self, timeout: int = 30):
         self.client = HTTPClient(
-            base_url=base_url,
-            page_size=page_size,
+            base_url=self._BASE_URL,
+            page_size=self._PAGE_SIZE,
             timeout=timeout,
         )
 
