@@ -1,10 +1,16 @@
+<p align="center">
+  <img src="assets/pse_logo.png" alt="PSE Logo">
+</p>
+
 # pse-python-sdk
 
 Python SDK for the PSE (Polskie Sieci Elektroenergetyczne) public reporting API.
 
+> API reference: https://api.raporty.pse.pl/app/home
+
 ## Release Status
 
-Current Version: 1.0.0
+Current Version: 1.0.1
 
 ## Installation
 
@@ -17,24 +23,31 @@ pip install git+https://github.com/FranekGit/pse-python-sdk.git
 ```python
 from pse_sdk import PSEClient
 
-pse = PSEClient()
+client = PSEClient()
 
 # Returns list[dict]
-records = pse.get_cen(start="2024-01-01", end="2024-01-31")
+records = client.get_cen(start="2024-01-01", end="2024-01-31")
 
 # Returns pd.DataFrame (requires pandas)
-df = pse.get_cen(start="2024-01-01", end="2024-01-31", format="dataframe")
+df = client.get_cen(start="2024-01-01", end="2024-01-31", format="dataframe")
 ```
 
 ## Date Formats
 
-Accepted formats: `YYYY-MM-DD`, `YYYY/MM/DD`, `YYYYMMDD`.
+| Format       | Example      |
+|--------------|--------------|
+| `YYYY-MM-DD` | `2024-01-01` |
+| `YYYY/MM/DD` | `2024/01/01` |
+| `YYYYMMDD`   | `20240101`   |
 
 ## Output Formats
 
-- `"dict"` (default) — returns `list[dict]`
-- `"dataframe"` — returns `pd.DataFrame` (requires `pse-sdk[pandas]`)
+| Format        | Return Type    | 
+|---------------|----------------|
+| `"dict"`      | `list[dict]`   |
+| `"dataframe"` | `pd.DataFrame` |
 
-## Documentation
+## Endpoints
 
 See [docs/endpoints.md](docs/endpoints.md) for available endpoints.
+
