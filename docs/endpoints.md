@@ -19,14 +19,14 @@ Every endpoint returns these columns plus endpoint-specific columns:
 
 > API reference: `https://api.raporty.pse.pl/api/openapi`
 
-| Endpoint | Method | Column | Status |
+| Endpoint | Column | Method | Status |
 |---|---|---|---|
-| `price-cost` | `get_cen()` | `cen_cost` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
-| `price-cost` | `get_ckoeb()` | `ckoeb_cost` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
-| `price-cost` | `get_ceb_sr()` | `ceb_sr_cost` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
-| `price-cost` | `get_cor_pp()` | `cor_pp_cost` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
-| `price-cost` | `get_imb_energy()` | `imb_energy` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
-| `price-cost` | `get_contracting()` | `contracting` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `price-cost` | `cen_cost` | `get_cen()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `price-cost` | `ckoeb_cost` | `get_ckoeb()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `price-cost` | `ceb_sr_cost` | `get_ceb_sr()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `price-cost` | `cor_pp_cost` | `get_cor_pp()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `price-cost` | `imb_energy` | `get_imb_energy()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `price-cost` | `contracting` | `get_contracting()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
 | `afrr-status` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `cmbp-tp` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `cmbu-tu` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
