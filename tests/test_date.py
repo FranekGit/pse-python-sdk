@@ -2,7 +2,7 @@ import datetime
 
 import pytest
 
-from pse_sdk._date import normalize_date, validate_date_range
+from pse_sdk._date import normalize_date, normalize_date_range
 
 
 class TestNormalizeDate:
@@ -38,13 +38,18 @@ class TestNormalizeDate:
             normalize_date("2024-02-30", "d")
 
 
-class TestValidateDateRange:
+class TestNormalizeDateRange:
     def test_equal_dates_pass(self):
-        validate_date_range("2024-01-01", "2024-01-01")
+        assert normalize_date_range("2024-01-01", "2024-01-01") == ("2024-01-01", "2024-01-01")
 
     def test_start_before_end_pass(self):
-        validate_date_range("2024-01-01", "2024-01-31")
+        assert normalize_date_range("2024-01-01", "2024-01-31") == ("2024-01-01", "2024-01-31")
 
     def test_start_after_end_raises(self):
         with pytest.raises(ValueError, match="must not be after"):
-            validate_date_range("2024-02-01", "2024-01-01")
+            normalize_date_range("2024-02-01", "2024-01-01")
+
+    def test_mixed_types(self):
+        import datetime
+        result = normalize_date_range(datetime.date(2024, 1, 1), "20240131")
+        assert result == ("2024-01-01", "2024-01-31")

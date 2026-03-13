@@ -42,7 +42,15 @@ def normalize_date(value: DateLike, param_name: str) -> str:
     )
 
 
-def validate_date_range(start: str, end: str) -> None:
+def _validate_date_range(start: str, end: str) -> None:
     """Raise ``ValueError`` if *start* is after *end*."""
     if start > end:
         raise ValueError(f"start date ({start}) must not be after end date ({end})")
+
+
+def normalize_date_range(start: DateLike, end: DateLike) -> tuple[str, str]:
+    """Normalize *start* and *end* to ``YYYY-MM-DD`` and validate the range."""
+    start_str = normalize_date(start, "start")
+    end_str = normalize_date(end, "end")
+    _validate_date_range(start_str, end_str)
+    return start_str, end_str
