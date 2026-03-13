@@ -30,10 +30,21 @@ class PSEClient:
             timeout=timeout,
         )
 
-        self.get_price_cost = make_endpoint(client=self.client, path="price-cost")
-        self.get_cen = make_endpoint(client=self.client, path="price-cost", columns=["cen_cost"])
-        self.get_ckoeb = make_endpoint(client=self.client, path="price-cost", columns=["ckoeb_cost"])
-        self.get_ceb_sr = make_endpoint(client=self.client, path="price-cost", columns=["ceb_sr_cost"])
-        self.get_cor_pp = make_endpoint(client=self.client, path="price-cost", columns=["cor_pp_cost"])
-        self.get_imb_energy = make_endpoint(client=self.client, path="price-cost", columns=["imb_energy"])
-        self.get_contracting = make_endpoint(client=self.client, path="price-cost", columns=["contracting"])
+        self.get_cen = make_endpoint(
+            client=self.client, path="price-cost", columns=["cen_cost"]
+        )
+        self.get_ckoeb = make_endpoint(
+            client=self.client, path="price-cost", columns=["ckoeb_cost"]
+        )
+        self.get_ceb_sr = make_endpoint(
+            client=self.client, path="price-cost", columns=["ceb_sr_cost"]
+        )
+        self.get_cor_pp = make_endpoint(
+            client=self.client, path="price-cost", columns=["cor_pp_cost"]
+        )
+        self.get_imb_energy = make_endpoint(
+            client=self.client, path="price-cost", columns=["imb_energy"]
+        )
+        self.get_contracting = make_endpoint(
+            client=self.client, path="price-cost", columns=["contracting"]
+        )
