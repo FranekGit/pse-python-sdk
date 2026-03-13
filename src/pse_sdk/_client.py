@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pse_sdk._http import HTTPClient
-from pse_sdk._endpoints import _make_endpoint
+from pse_sdk._endpoints import make_endpoint
 
 
 class PSEClient:
@@ -28,21 +28,21 @@ class PSEClient:
             timeout=timeout,
         )
 
-        self.get_cen = _make_endpoint(
+        self.get_cen = make_endpoint(
             client=self.client, path="price-cost", columns=["cen_cost"]
         )
-        self.get_ckoeb = _make_endpoint(
+        self.get_ckoeb = make_endpoint(
             client=self.client, path="price-cost", columns=["ckoeb_cost"]
         )
-        self.get_ceb_sr = _make_endpoint(
+        self.get_ceb_sr = make_endpoint(
             client=self.client, path="price-cost", columns=["ceb_sr_cost"]
         )
-        self.get_cor_pp = _make_endpoint(
+        self.get_cor_pp = make_endpoint(
             client=self.client, path="price-cost", columns=["cor_pp_cost"]
         )
-        self.get_imb_energy = _make_endpoint(
+        self.get_imb_energy = make_endpoint(
             client=self.client, path="price-cost", columns=["imb_energy"]
         )
-        self.get_contracting = _make_endpoint(
+        self.get_contracting = make_endpoint(
             client=self.client, path="price-cost", columns=["contracting"]
         )

@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from pse_sdk._http import HTTPClient
-from pse_sdk._format import OutputFormat, convert
 from pse_sdk._dates import DateLike, normalize_date_range
+from pse_sdk._format import OutputFormat, convert
+from pse_sdk._http import HTTPClient
 
 COMMON_COLUMNS = ["dtime", "period", "business_date", "publication_ts"]
 
 
-def _make_endpoint(client: HTTPClient, path: str, columns: list[str] | None = None):
+def make_endpoint(client: HTTPClient, path: str, columns: list[str] | None = None):
     """Create a callable that fetches and formats endpoint data."""
     select = list(COMMON_COLUMNS) + columns if columns else None
 
