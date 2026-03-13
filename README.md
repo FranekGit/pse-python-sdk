@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/pse_logo.png" alt="PSE Logo">
+</p>
+
 # pse-python-sdk
 
 Python SDK for the PSE (Polskie Sieci Elektroenergetyczne) public reporting API.
