@@ -6,6 +6,8 @@
 
 Python SDK for the PSE (Polskie Sieci Elektroenergetyczne) public reporting API.
 
+> API page: https://api.raporty.pse.pl/app/home
+
 ## Release Status
 
 Current Version: 1.0.0
@@ -48,3 +50,4 @@ df = client.get_cen(start="2024-01-01", end="2024-01-31", format="dataframe")
 ## Endpoints
 
 See [docs/endpoints.md](docs/endpoints.md) for available endpoints.
+
