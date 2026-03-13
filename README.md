@@ -1,4 +1,4 @@
-# pse-sdk
+# pse-python-sdk
 
 Python SDK for the PSE (Polskie Sieci Elektroenergetyczne) public reporting API.
 
