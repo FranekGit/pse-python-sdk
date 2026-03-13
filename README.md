@@ -20,10 +20,10 @@ from pse_sdk import PSEClient
 pse = PSEClient()
 
 # Returns list[dict]
-records = pse.get_cen("2024-01-01", "2024-01-31")
+records = pse.get_cen(start="2024-01-01", end="2024-01-31")
 
 # Returns pd.DataFrame (requires pandas)
-df = pse.get_cen("2024-01-01", "2024-01-31", format="dataframe")
+df = pse.get_cen(start="2024-01-01", end="2024-01-31", format="dataframe")
 ```
 
 ## Date Formats
