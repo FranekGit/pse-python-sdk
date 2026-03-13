@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pse_sdk._dates import DateLike, normalize_date_range
+from pse_sdk._dates import normalize_date_range
 from pse_sdk._format import OutputFormat, convert
 from pse_sdk._http import HTTPClient
 
@@ -12,17 +12,17 @@ def make_endpoint(client: HTTPClient, path: str, columns: list[str] | None = Non
     select = list(COMMON_COLUMNS) + columns if columns else None
 
     def fetch(
-        start: DateLike, end: DateLike, format: OutputFormat = "dict"
+        start: str, end: str, format: OutputFormat = "dict"
     ) -> list[dict]:
         """Query PSE data for a date range.
 
         Args:
-            start: Begin of range (``str``, ``date``, or ``datetime``).
-            end: End of range (``str``, ``date``, or ``datetime``).
+            start: Begin of range (``YYYY-MM-DD``, ``YYYY/MM/DD``, or ``YYYYMMDD``).
+            end: End of range (``YYYY-MM-DD``, ``YYYY/MM/DD``, or ``YYYYMMDD``).
             format: Output format — ``"dict"`` (default) or ``"dataframe"``.
 
         Raises:
-            TypeError: If *start* or *end* is not a supported type.
+            TypeError: If *start* or *end* is not a string.
             ValueError: If a date string cannot be parsed, or *start* is
                 after *end*.
         """

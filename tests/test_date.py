@@ -1,5 +1,3 @@
-import datetime
-
 import pytest
 
 from pse_sdk._dates import normalize_date, normalize_date_range
@@ -17,13 +15,6 @@ class TestNormalizeDate:
 
     def test_whitespace_stripped(self):
         assert normalize_date("  2024-01-15  ", "d") == "2024-01-15"
-
-    def test_date_object(self):
-        assert normalize_date(datetime.date(2024, 1, 15), "d") == "2024-01-15"
-
-    def test_datetime_object(self):
-        dt = datetime.datetime(2024, 1, 15, 13, 45, 0)
-        assert normalize_date(dt, "d") == "2024-01-15"
 
     def test_invalid_string(self):
         with pytest.raises(ValueError, match="start"):
@@ -48,8 +39,3 @@ class TestNormalizeDateRange:
     def test_start_after_end_raises(self):
         with pytest.raises(ValueError, match="must not be after"):
             normalize_date_range("2024-02-01", "2024-01-01")
-
-    def test_mixed_types(self):
-        import datetime
-        result = normalize_date_range(datetime.date(2024, 1, 1), "20240131")
-        assert result == ("2024-01-01", "2024-01-31")
