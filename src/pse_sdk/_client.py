@@ -1,72 +1,48 @@
 from __future__ import annotations
 
-import requests
+from pse_sdk._http import HTTPClient
+from pse_sdk._endpoints import _make_endpoint
 
 
-class HTTPClient:
-    """Low-level HTTP client for the PSE API with OData pagination."""
+class PSEClient:
+    """Client for the PSE (Polskie Sieci Elektoenergetyczne) reporting API.
 
-    def __init__(
-        self,
-        base_url: str,
-        page_size: int,
-        timeout: int,
-    ):
-        self.base_url = base_url.rstrip("/")
-        self.page_size = page_size
-        self.timeout = timeout
-        self.session = requests.Session()
+    Args:
+        timeout: HTTP timeout in seconds.
 
-    def fetch(
-        self,
-        path: str,
-        *,
-        select: list[str] | None = None,
-        filter_expr: str | None = None,
-        order_by: str | None = None,
-        first: int | None = None,
-        after: str | None = None,
-    ) -> dict:
-        """Fetch a single page from the API."""
-        url = f"{self.base_url}/{path}"
-        params: dict[str, str] = {}
-        if select:
-            params["$select"] = ",".join(select)
-        if filter_expr:
-            params["$filter"] = filter_expr
-        if order_by:
-            params["$orderby"] = order_by
-        if first is not None:
-            params["$first"] = str(first)
-        if after:
-            params["$after"] = after
+    Usage::
 
-        resp = self.session.get(url, params=params, timeout=self.timeout)
-        resp.raise_for_status()
-        return resp.json()
+        from pse_sdk import PSEClient
+        pse = PSEClient()
+        records = pse.get_cen("2024-01-01", "2024-01-31")
+        df = pse.get_price_cost("2024-01-01", "2024-01-31", format="dataframe")
+    """
 
-    def fetch_all(
-        self,
-        path: str,
-        *,
-        select: list[str] | None = None,
-        filter_expr: str | None = None,
-        order_by: str | None = None,
-    ) -> list[dict]:
-        """Fetch all pages, auto-paginating via nextLink."""
-        data = self.fetch(
-            path,
-            select=select,
-            filter_expr=filter_expr,
-            order_by=order_by,
-            first=self.page_size,
+    _BASE_URL = "https://api.raporty.pse.pl/api"
+    _PAGE_SIZE = 100
+
+    def __init__(self, timeout: int = 30) -> None:
+        self.client: HTTPClient = HTTPClient(
+            base_url=self._BASE_URL,
+            page_size=self._PAGE_SIZE,
+            timeout=timeout,
         )
-        records: list[dict] = data.get("value", [])
 
-        while "nextLink" in data:
-            resp = self.session.get(data["nextLink"], timeout=self.timeout)
-            resp.raise_for_status()
-            data = resp.json()
-            records.extend(data.get("value", []))
-
-        return records
+        self.get_cen = _make_endpoint(
+            client=self.client, path="price-cost", columns=["cen_cost"]
+        )
+        self.get_ckoeb = _make_endpoint(
+            client=self.client, path="price-cost", columns=["ckoeb_cost"]
+        )
+        self.get_ceb_sr = _make_endpoint(
+            client=self.client, path="price-cost", columns=["ceb_sr_cost"]
+        )
+        self.get_cor_pp = _make_endpoint(
+            client=self.client, path="price-cost", columns=["cor_pp_cost"]
+        )
+        self.get_imb_energy = _make_endpoint(
+            client=self.client, path="price-cost", columns=["imb_energy"]
+        )
+        self.get_contracting = _make_endpoint(
+            client=self.client, path="price-cost", columns=["contracting"]
+        )

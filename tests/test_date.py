@@ -2,7 +2,7 @@ import datetime
 
 import pytest
 
-from pse_sdk._date import normalize_date, normalize_date_range
+from pse_sdk._dates import normalize_date, normalize_date_range
 
 
 class TestNormalizeDate:
