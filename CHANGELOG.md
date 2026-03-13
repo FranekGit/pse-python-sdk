@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-03-13
+
+### Documentation
+- Add LICENSE.md with copyright and usage terms
+- Add logo image
+- Enhance endpoints documentation with detailed coverage and status badges
+- Update example code in README.md for clarity
+- Add API page link to README.md
+
 ## [1.0.0] - 2026-03-13
 
 ### Added
