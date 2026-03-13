@@ -6,7 +6,7 @@
 
 Python SDK for the PSE (Polskie Sieci Elektroenergetyczne) public reporting API.
 
-> API page: https://api.raporty.pse.pl/app/home
+> API reference: https://api.raporty.pse.pl/app/home
 
 ## Release Status
 
