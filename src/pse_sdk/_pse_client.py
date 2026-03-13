@@ -21,8 +21,8 @@ class PSEClient:
     _BASE_URL = "https://api.raporty.pse.pl/api"
     _PAGE_SIZE = 100
 
-    def __init__(self, timeout: int = 30):
-        self.client = HTTPClient(
+    def __init__(self, timeout: int = 30) -> None:
+        self.client: HTTPClient = HTTPClient(
             base_url=self._BASE_URL,
             page_size=self._PAGE_SIZE,
             timeout=timeout,
