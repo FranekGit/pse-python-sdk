@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from pse_sdk._http import HTTPClient
 from pse_sdk._endpoints import make_endpoint
+from pse_sdk._http import HTTPClient
 
 
 class PSEClient:
@@ -45,4 +45,7 @@ class PSEClient:
         )
         self.get_contracting = make_endpoint(
             client=self.client, path="price-cost", columns=["contracting"]
+        )
+        self.get_csdac = make_endpoint(
+            client=self.client, path="csdac-pln", columns=["csdac_pln"]
         )
