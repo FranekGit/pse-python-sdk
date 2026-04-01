@@ -61,9 +61,9 @@ class PSEClient:
         )
 
         # kmb-kro-rozl
-        self.get_kb = make_endpoint(
+        self.get_kmb = make_endpoint(
             client=self.client, path="kmb-kro-rozl", columns=["kmb"]
         )
-        self.get_ko = make_endpoint(
+        self.get_kro = make_endpoint(
             client=self.client, path="kmb-kro-rozl", columns=["kro"]
         )
