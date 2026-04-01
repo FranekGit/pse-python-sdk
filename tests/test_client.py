@@ -28,21 +28,22 @@ class TestPSEClient:
     @patch("pse_sdk._client.HTTPClient")
     def test_all_endpoints_created(self, mock_http, mock_make):
         pse = PSEClient()
-        for attr in ("get_cen", "get_ckoeb", "get_ceb_sr", "get_cor_pp", "get_imb_energy", "get_contracting"):
+        for attr in ("get_cen", "get_ckoeb", "get_ceb_sr", "get_cor_pp", "get_imb_energy", "get_contracting", "get_csdac"):
             assert callable(getattr(pse, attr))
 
     @patch("pse_sdk._client.make_endpoint", return_value=MagicMock())
     @patch("pse_sdk._client.HTTPClient")
-    def test_make_endpoint_called_six_times(self, mock_http, mock_make):
+    def test_make_endpoint_called_seven_times(self, mock_http, mock_make):
         PSEClient()
-        assert mock_make.call_count == 6
+        assert mock_make.call_count == 7
 
     @patch("pse_sdk._client.make_endpoint", return_value=MagicMock())
     @patch("pse_sdk._client.HTTPClient")
-    def test_endpoint_paths_all_price_cost(self, mock_http, mock_make):
+    def test_endpoint_paths(self, mock_http, mock_make):
         PSEClient()
-        for call in mock_make.call_args_list:
-            assert call.kwargs["path"] == "price-cost"
+        paths = [call.kwargs["path"] for call in mock_make.call_args_list]
+        assert paths.count("price-cost") == 6
+        assert paths.count("csdac-pln") == 1
 
     @patch("pse_sdk._client.make_endpoint", return_value=MagicMock())
     @patch("pse_sdk._client.HTTPClient")
@@ -56,4 +57,5 @@ class TestPSEClient:
             ["cor_pp_cost"],
             ["imb_energy"],
             ["contracting"],
+            ["csdac_pln"],
         ]
