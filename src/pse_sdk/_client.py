@@ -28,6 +28,7 @@ class PSEClient:
             timeout=timeout,
         )
 
+        # price-cost
         self.get_cen = make_endpoint(
             client=self.client, path="price-cost", columns=["cen_cost"]
         )
@@ -46,6 +47,23 @@ class PSEClient:
         self.get_contracting = make_endpoint(
             client=self.client, path="price-cost", columns=["contracting"]
         )
+
+        # csdac-pln
         self.get_csdac = make_endpoint(
             client=self.client, path="csdac-pln", columns=["csdac_pln"]
+        )
+
+        # krb-rozl
+        self.get_kb = make_endpoint(client=self.client, path="krb-rozl", columns=["kb"])
+        self.get_ko = make_endpoint(client=self.client, path="krb-rozl", columns=["ko"])
+        self.get_kcz = make_endpoint(
+            client=self.client, path="krb-rozl", columns=["kcz"]
+        )
+
+        # kmb-kro-rozl
+        self.get_kmb = make_endpoint(
+            client=self.client, path="kmb-kro-rozl", columns=["kmb"]
+        )
+        self.get_kro = make_endpoint(
+            client=self.client, path="kmb-kro-rozl", columns=["kro"]
         )

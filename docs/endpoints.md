@@ -28,6 +28,11 @@ Every endpoint returns these columns plus endpoint-specific columns:
 | `price-cost` | `imb_energy` | `get_imb_energy()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
 | `price-cost` | `contracting` | `get_contracting()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
 | `csdac-pln` | `csdac_pln` | `get_csdac()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `kmb-kro-rozl` | `kmb` | `get_kmb()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `kmb-kro-rozl` | `kro` | `get_kro()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `krb-rozl` | `kb` | `get_kb()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `krb-rozl` | `ko` | `get_ko()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `krb-rozl` | `kcz` | `get_kcz()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
 | `afrr-status` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `cmbp-tp` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `cmbu-tu` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
@@ -63,8 +68,6 @@ Every endpoint returns these columns plus endpoint-specific columns:
 | `it-pp-rbn` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `it-use-rbb` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `it-use-rbn` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
-| `kmb-kro-rozl` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
-| `krb-rozl` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `kse-load` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `lolp` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `mbp-tp` | | | ![planned](https://img.shields.io/badge/planned-yellow) |

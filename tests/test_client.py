@@ -1,12 +1,24 @@
-from unittest.mock import MagicMock, patch
-
 from pse_sdk._client import PSEClient
+
+EXPECTED_ENDPOINTS = [
+    ("get_cen", "price-cost", ["cen_cost"]),
+    ("get_ckoeb", "price-cost", ["ckoeb_cost"]),
+    ("get_ceb_sr", "price-cost", ["ceb_sr_cost"]),
+    ("get_cor_pp", "price-cost", ["cor_pp_cost"]),
+    ("get_imb_energy", "price-cost", ["imb_energy"]),
+    ("get_contracting", "price-cost", ["contracting"]),
+    ("get_csdac", "csdac-pln", ["csdac_pln"]),
+    ("get_kb", "krb-rozl", ["kb"]),
+    ("get_ko", "krb-rozl", ["ko"]),
+    ("get_kcz", "krb-rozl", ["kcz"]),
+    ("get_kmb", "kmb-kro-rozl", ["kmb"]),
+    ("get_kro", "kmb-kro-rozl", ["kro"]),
+]
 
 
 class TestPSEClient:
-    @patch("pse_sdk._client.make_endpoint", return_value=MagicMock())
-    @patch("pse_sdk._client.HTTPClient")
-    def test_default_timeout(self, mock_http, mock_make):
+    def test_default_timeout(self, mock_client):
+        mock_http, mock_make = mock_client
         PSEClient()
         mock_http.assert_called_once_with(
             base_url="https://api.raporty.pse.pl/api",
@@ -14,9 +26,8 @@ class TestPSEClient:
             timeout=30,
         )
 
-    @patch("pse_sdk._client.make_endpoint", return_value=MagicMock())
-    @patch("pse_sdk._client.HTTPClient")
-    def test_custom_timeout(self, mock_http, mock_make):
+    def test_custom_timeout(self, mock_client):
+        mock_http, mock_make = mock_client
         PSEClient(timeout=60)
         mock_http.assert_called_once_with(
             base_url="https://api.raporty.pse.pl/api",
@@ -24,38 +35,24 @@ class TestPSEClient:
             timeout=60,
         )
 
-    @patch("pse_sdk._client.make_endpoint", return_value=MagicMock())
-    @patch("pse_sdk._client.HTTPClient")
-    def test_all_endpoints_created(self, mock_http, mock_make):
+    def test_all_endpoints_created(self, mock_client):
         pse = PSEClient()
-        for attr in ("get_cen", "get_ckoeb", "get_ceb_sr", "get_cor_pp", "get_imb_energy", "get_contracting", "get_csdac"):
-            assert callable(getattr(pse, attr))
+        for name, _, _ in EXPECTED_ENDPOINTS:
+            assert callable(getattr(pse, name))
 
-    @patch("pse_sdk._client.make_endpoint", return_value=MagicMock())
-    @patch("pse_sdk._client.HTTPClient")
-    def test_make_endpoint_called_seven_times(self, mock_http, mock_make):
+    def test_make_endpoint_call_count(self, mock_client):
+        _, mock_make = mock_client
         PSEClient()
-        assert mock_make.call_count == 7
+        assert mock_make.call_count == len(EXPECTED_ENDPOINTS)
 
-    @patch("pse_sdk._client.make_endpoint", return_value=MagicMock())
-    @patch("pse_sdk._client.HTTPClient")
-    def test_endpoint_paths(self, mock_http, mock_make):
+    def test_endpoint_paths(self, mock_client):
+        _, mock_make = mock_client
         PSEClient()
         paths = [call.kwargs["path"] for call in mock_make.call_args_list]
-        assert paths.count("price-cost") == 6
-        assert paths.count("csdac-pln") == 1
+        assert paths == [path for _, path, _ in EXPECTED_ENDPOINTS]
 
-    @patch("pse_sdk._client.make_endpoint", return_value=MagicMock())
-    @patch("pse_sdk._client.HTTPClient")
-    def test_endpoint_columns(self, mock_http, mock_make):
+    def test_endpoint_columns(self, mock_client):
+        _, mock_make = mock_client
         PSEClient()
         columns = [call.kwargs["columns"] for call in mock_make.call_args_list]
-        assert columns == [
-            ["cen_cost"],
-            ["ckoeb_cost"],
-            ["ceb_sr_cost"],
-            ["cor_pp_cost"],
-            ["imb_energy"],
-            ["contracting"],
-            ["csdac_pln"],
-        ]
+        assert columns == [cols for _, _, cols in EXPECTED_ENDPOINTS]
