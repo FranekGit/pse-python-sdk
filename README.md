@@ -10,7 +10,7 @@ Python SDK for the PSE (Polskie Sieci Elektroenergetyczne) public reporting API.
 
 ## Release Status
 
-Current Version: 1.0.1
+Current Version: 1.0.2
 
 ## Installation
 
