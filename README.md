@@ -4,13 +4,12 @@
 
 # pse-python-sdk
 
+![Version](https://img.shields.io/badge/version-v1.3.0-blue)
+
 Python SDK for the PSE (Polskie Sieci Elektroenergetyczne) public reporting API.
 
 > API reference: https://api.raporty.pse.pl/app/home
 
-## Release Status
-
-Current Version: 1.2.0
 
 ## Installation
 
