@@ -1,3 +1,4 @@
+from unittest.mock import patch
 from urllib.parse import parse_qs, urlparse
 
 import pytest
@@ -117,3 +118,64 @@ class TestFetchAll:
         c.fetch_all("data")
         params = parse_qs(urlparse(responses.calls[0].request.url).query)
         assert params["$first"] == ["25"]
+
+
+class TestRetry:
+    @responses.activate
+    @patch("pse_sdk._http.time.sleep")
+    def test_retry_on_500_then_success(self, mock_sleep):
+        responses.get(
+            f"{BASE_URL}/data",
+            json={"value": [{"a": 1}], "nextLink": "https://api.example.com/p2"},
+        )
+        responses.get("https://api.example.com/p2", status=500)
+        responses.get("https://api.example.com/p2", json={"value": [{"a": 2}]})
+
+        c = HTTPClient(BASE_URL, 10, 5)
+        result = c.fetch_all("data")
+        assert result == [{"a": 1}, {"a": 2}]
+        mock_sleep.assert_called_once_with(1)
+
+    @responses.activate
+    @patch("pse_sdk._http.time.sleep")
+    def test_retry_exhaustion_raises(self, mock_sleep):
+        responses.get(
+            f"{BASE_URL}/data",
+            json={"value": [{"a": 1}], "nextLink": "https://api.example.com/p2"},
+        )
+        for _ in range(4):
+            responses.get("https://api.example.com/p2", status=500)
+
+        c = HTTPClient(BASE_URL, 10, 5)
+        with pytest.raises(requests.exceptions.HTTPError):
+            c.fetch_all("data")
+        assert mock_sleep.call_count == 3
+
+    @responses.activate
+    @patch("pse_sdk._http.time.sleep")
+    def test_no_retry_on_4xx(self, mock_sleep):
+        responses.get(
+            f"{BASE_URL}/data",
+            json={"value": [{"a": 1}], "nextLink": "https://api.example.com/p2"},
+        )
+        responses.get("https://api.example.com/p2", status=404)
+
+        c = HTTPClient(BASE_URL, 10, 5)
+        with pytest.raises(requests.exceptions.HTTPError):
+            c.fetch_all("data")
+        mock_sleep.assert_not_called()
+
+    @responses.activate
+    @patch("pse_sdk._http.time.sleep")
+    @pytest.mark.parametrize("status", [502, 503, 504])
+    def test_retry_on_other_server_errors(self, mock_sleep, status):
+        responses.get(
+            f"{BASE_URL}/data",
+            json={"value": [{"a": 1}], "nextLink": "https://api.example.com/p2"},
+        )
+        responses.get("https://api.example.com/p2", status=status)
+        responses.get("https://api.example.com/p2", json={"value": [{"a": 2}]})
+
+        c = HTTPClient(BASE_URL, 10, 5)
+        result = c.fetch_all("data")
+        assert result == [{"a": 1}, {"a": 2}]
