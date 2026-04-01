@@ -27,6 +27,7 @@ Every endpoint returns these columns plus endpoint-specific columns:
 | `price-cost` | `cor_pp_cost` | `get_cor_pp()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
 | `price-cost` | `imb_energy` | `get_imb_energy()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
 | `price-cost` | `contracting` | `get_contracting()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `csdac-pln` | `csdac_pln` | `get_csdac()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
 | `afrr-status` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `cmbp-tp` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `cmbu-tu` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
@@ -35,7 +36,6 @@ Every endpoint returns these columns plus endpoint-specific columns:
 | `cor-q-1` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `cordmax` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `crb-rozl` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
-| `csdac-pln` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `csire-kpi1` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `csire-kpi2` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `csire-kpi3` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
