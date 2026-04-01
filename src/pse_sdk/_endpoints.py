@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pse_sdk._dates import normalize_date_range
+from pse_sdk._dates import normalize_date_range, split_date_range
 from pse_sdk._format import OutputFormat, convert
 from pse_sdk._http import HTTPClient
 
@@ -27,9 +27,11 @@ def make_endpoint(client: HTTPClient, path: str, columns: list[str] | None = Non
                 after *end*.
         """
         start_str, end_str = normalize_date_range(start, end)
-        filter_expr = f"business_date ge '{start_str}' and business_date le '{end_str}'"
 
-        records = client.fetch_all(path, select=select, filter_expr=filter_expr)
+        records: list[dict] = []
+        for chunk_start, chunk_end in split_date_range(start_str, end_str):
+            filter_expr = f"business_date ge '{chunk_start}' and business_date le '{chunk_end}'"
+            records.extend(client.fetch_all(path, select=select, filter_expr=filter_expr))
 
         return convert(records, format)
 

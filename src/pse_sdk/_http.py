@@ -1,10 +1,19 @@
 from __future__ import annotations
 
+import logging
+import time
+
 import requests
+
+logger = logging.getLogger(__name__)
 
 
 class HTTPClient:
     """Low-level HTTP client for the PSE API with OData pagination."""
+
+    _RETRY_STATUSES = (500, 502, 503, 504)
+    _MAX_RETRIES = 3
+    _BACKOFF_BASE = 1
 
     def __init__(
         self,
@@ -45,6 +54,20 @@ class HTTPClient:
         resp.raise_for_status()
         return resp.json()
 
+    def _request_with_retry(self, url: str) -> dict:
+        """GET *url* with retries on transient server errors."""
+        for attempt in range(self._MAX_RETRIES + 1):
+            resp = self.session.get(url, timeout=self.timeout)
+            if resp.status_code not in self._RETRY_STATUSES or attempt == self._MAX_RETRIES:
+                resp.raise_for_status()
+                return resp.json()
+            delay = self._BACKOFF_BASE * (2 ** attempt)
+            logger.warning(
+                "HTTP %s from %s, retrying in %ss (%d/%d)",
+                resp.status_code, url, delay, attempt + 1, self._MAX_RETRIES,
+            )
+            time.sleep(delay)
+
     def fetch_all(
         self,
         path: str,
@@ -64,9 +87,7 @@ class HTTPClient:
         records: list[dict] = data.get("value", [])
 
         while "nextLink" in data:
-            resp = self.session.get(data["nextLink"], timeout=self.timeout)
-            resp.raise_for_status()
-            data = resp.json()
+            data = self._request_with_retry(data["nextLink"])
             records.extend(data.get("value", []))
 
         return records

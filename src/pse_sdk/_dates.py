@@ -43,3 +43,17 @@ def normalize_date_range(start: str, end: str) -> tuple[str, str]:
     end_str = normalize_date(end, "end")
     validate_date_range(start_str, end_str)
     return start_str, end_str
+
+
+def split_date_range(
+    start: str, end: str, max_days: int = 30
+) -> list[tuple[str, str]]:
+    """Split a normalised date range into chunks of at most *max_days* days."""
+    chunks: list[tuple[str, str]] = []
+    current = datetime.date.fromisoformat(start)
+    end_date = datetime.date.fromisoformat(end)
+    while current <= end_date:
+        chunk_end = min(current + datetime.timedelta(days=max_days - 1), end_date)
+        chunks.append((current.isoformat(), chunk_end.isoformat()))
+        current = chunk_end + datetime.timedelta(days=1)
+    return chunks
