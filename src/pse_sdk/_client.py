@@ -67,3 +67,14 @@ class PSEClient:
         self.get_kro = make_endpoint(
             client=self.client, path="kmb-kro-rozl", columns=["kro"]
         )
+
+        # sk
+        self.get_sk_d1_fcst = make_endpoint(
+            client=self.client, path="sk", columns=["sk_d1_fcst"]
+        )
+        self.get_sk_d_fcst = make_endpoint(
+            client=self.client, path="sk", columns=["sk_d_fcst"]
+        )
+        self.get_sk_cost = make_endpoint(
+            client=self.client, path="sk", columns=["sk_cost"]
+        )
