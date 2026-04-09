@@ -13,6 +13,9 @@ EXPECTED_ENDPOINTS = [
     ("get_kcz", "krb-rozl", ["kcz"]),
     ("get_kmb", "kmb-kro-rozl", ["kmb"]),
     ("get_kro", "kmb-kro-rozl", ["kro"]),
+    ("get_sk_d1_fcst", "sk", ["sk_d1_fcst"]),
+    ("get_sk_d_fcst", "sk", ["sk_d_fcst"]),
+    ("get_sk_cost", "sk", ["sk_cost"]),
 ]
 
 

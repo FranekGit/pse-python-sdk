@@ -33,6 +33,9 @@ Every endpoint returns these columns plus endpoint-specific columns:
 | `krb-rozl` | `kb` | `get_kb()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
 | `krb-rozl` | `ko` | `get_ko()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
 | `krb-rozl` | `kcz` | `get_kcz()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `sk` | `sk_d1_fcst` | `get_sk_d1_fcst()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `sk` | `sk_d_fcst` | `get_sk_d_fcst()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `sk` | `sk_cost` | `get_sk_cost()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
 | `afrr-status` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `cmbp-tp` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `cmbu-tu` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
@@ -109,7 +112,6 @@ Every endpoint returns these columns plus endpoint-specific columns:
 | `rce-pln` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `ro-prog` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `ro-rozl` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
-| `sk` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `specwezlow` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `unav-pk5l` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `use-sprz-rbb` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
