@@ -4,7 +4,7 @@
 
 # pse-python-sdk
 
-![Version](https://img.shields.io/badge/version-v1.3.0-blue)
+![Version](https://img.shields.io/badge/version-v1.4.0-blue)
 
 Python SDK for the PSE (Polskie Sieci Elektroenergetyczne) public reporting API.
 
