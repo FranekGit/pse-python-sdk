@@ -11,9 +11,7 @@ def make_endpoint(client: HTTPClient, path: str, columns: list[str] | None = Non
     """Create a callable that fetches and formats endpoint data."""
     select = list(COMMON_COLUMNS) + columns if columns else None
 
-    def fetch(
-        start: str, end: str, format: OutputFormat = "dict"
-    ) -> list[dict]:
+    def fetch(start: str, end: str, format: OutputFormat = "dict") -> list[dict]:
         """Query PSE data for a date range.
 
         Args:
@@ -30,8 +28,12 @@ def make_endpoint(client: HTTPClient, path: str, columns: list[str] | None = Non
 
         records: list[dict] = []
         for chunk_start, chunk_end in split_date_range(start_str, end_str):
-            filter_expr = f"business_date ge '{chunk_start}' and business_date le '{chunk_end}'"
-            records.extend(client.fetch_all(path, select=select, filter_expr=filter_expr))
+            filter_expr = (
+                f"business_date ge '{chunk_start}' and business_date le '{chunk_end}'"
+            )
+            records.extend(
+                client.fetch_all(path, select=select, filter_expr=filter_expr)
+            )
 
         return convert(records, format)
 

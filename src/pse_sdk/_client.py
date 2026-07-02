@@ -78,3 +78,56 @@ class PSEClient:
         self.get_sk_cost = make_endpoint(
             client=self.client, path="sk", columns=["sk_cost"]
         )
+
+        # his-wlk-cal
+        self.get_demand = make_endpoint(
+            client=self.client, path="his-wlk-cal", columns=["demand"]
+        )
+        self.get_swm_p = make_endpoint(
+            client=self.client, path="his-wlk-cal", columns=["swm_p"]
+        )
+        self.get_swm_np = make_endpoint(
+            client=self.client, path="his-wlk-cal", columns=["swm_np"]
+        )
+        self.get_jg = make_endpoint(
+            client=self.client, path="his-wlk-cal", columns=["jg"]
+        )
+        self.get_jgw1 = make_endpoint(
+            client=self.client, path="his-wlk-cal", columns=["jgw1"]
+        )
+        self.get_jgw2 = make_endpoint(
+            client=self.client, path="his-wlk-cal", columns=["jgw2"]
+        )
+        self.get_jgm1 = make_endpoint(
+            client=self.client, path="his-wlk-cal", columns=["jgm1"]
+        )
+        self.get_jgm2 = make_endpoint(
+            client=self.client, path="his-wlk-cal", columns=["jgm2"]
+        )
+        self.get_jgz1 = make_endpoint(
+            client=self.client, path="his-wlk-cal", columns=["jgz1"]
+        )
+        self.get_jgz2 = make_endpoint(
+            client=self.client, path="his-wlk-cal", columns=["jgz2"]
+        )
+        self.get_jgz3 = make_endpoint(
+            client=self.client, path="his-wlk-cal", columns=["jgz3"]
+        )
+        self.get_jga = make_endpoint(
+            client=self.client, path="his-wlk-cal", columns=["jga"]
+        )
+        self.get_jgo = make_endpoint(
+            client=self.client, path="his-wlk-cal", columns=["jgo"]
+        )
+        self.get_jnwrb = make_endpoint(
+            client=self.client, path="his-wlk-cal", columns=["jnwrb"]
+        )
+        self.get_jgm = make_endpoint(
+            client=self.client, path="his-wlk-cal", columns=["jgm"]
+        )
+        self.get_wi = make_endpoint(
+            client=self.client, path="his-wlk-cal", columns=["wi"]
+        )
+        self.get_pv = make_endpoint(
+            client=self.client, path="his-wlk-cal", columns=["pv"]
+        )
