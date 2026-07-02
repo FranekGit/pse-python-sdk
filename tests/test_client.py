@@ -16,6 +16,23 @@ EXPECTED_ENDPOINTS = [
     ("get_sk_d1_fcst", "sk", ["sk_d1_fcst"]),
     ("get_sk_d_fcst", "sk", ["sk_d_fcst"]),
     ("get_sk_cost", "sk", ["sk_cost"]),
+    ("get_demand", "his-wlk-cal", ["demand"]),
+    ("get_swm_p", "his-wlk-cal", ["swm_p"]),
+    ("get_swm_np", "his-wlk-cal", ["swm_np"]),
+    ("get_jg", "his-wlk-cal", ["jg"]),
+    ("get_jgw1", "his-wlk-cal", ["jgw1"]),
+    ("get_jgw2", "his-wlk-cal", ["jgw2"]),
+    ("get_jgm1", "his-wlk-cal", ["jgm1"]),
+    ("get_jgm2", "his-wlk-cal", ["jgm2"]),
+    ("get_jgz1", "his-wlk-cal", ["jgz1"]),
+    ("get_jgz2", "his-wlk-cal", ["jgz2"]),
+    ("get_jgz3", "his-wlk-cal", ["jgz3"]),
+    ("get_jga", "his-wlk-cal", ["jga"]),
+    ("get_jgo", "his-wlk-cal", ["jgo"]),
+    ("get_jnwrb", "his-wlk-cal", ["jnwrb"]),
+    ("get_jgm", "his-wlk-cal", ["jgm"]),
+    ("get_wi", "his-wlk-cal", ["wi"]),
+    ("get_pv", "his-wlk-cal", ["pv"]),
 ]
 
 
