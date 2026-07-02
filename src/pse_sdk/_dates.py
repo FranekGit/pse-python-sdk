@@ -26,8 +26,7 @@ def normalize_date(value: str, param_name: str) -> str:
 
     accepted = ", ".join(f"'{f}'" for f in DATE_FORMATS)
     raise ValueError(
-        f"{param_name}: unable to parse date {value!r}. "
-        f"Accepted formats: {accepted}"
+        f"{param_name}: unable to parse date {value!r}. Accepted formats: {accepted}"
     )
 
 
@@ -45,9 +44,7 @@ def normalize_date_range(start: str, end: str) -> tuple[str, str]:
     return start_str, end_str
 
 
-def split_date_range(
-    start: str, end: str, max_days: int = 30
-) -> list[tuple[str, str]]:
+def split_date_range(start: str, end: str, max_days: int = 30) -> list[tuple[str, str]]:
     """Split a normalised date range into chunks of at most *max_days* days."""
     chunks: list[tuple[str, str]] = []
     current = datetime.date.fromisoformat(start)
