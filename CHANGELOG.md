@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-07-02
+
+### Added
+- `his-wlk-cal` endpoints to PSEClient (`get_demand`, `get_swm_p`, `get_swm_np`,
+  `get_jg`, `get_jgw1`, `get_jgw2`, `get_jgm1`, `get_jgm2`, `get_jgz1`, `get_jgz2`,
+  `get_jgz3`, `get_jga`, `get_jgo`, `get_jnwrb`, `get_jgm`, `get_wi`, `get_pv`)
+
+### Fixed
+- HTTP 400 on all endpoints: PSE API rejects percent-encoded `$` in query
+  parameter names; `HTTPClient.fetch` now builds the query string manually
+
 ## [1.4.0] - 2026-04-09
 
 ### Added

@@ -28,6 +28,23 @@ Every endpoint returns these columns plus endpoint-specific columns:
 | `price-cost` | `imb_energy` | `get_imb_energy()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
 | `price-cost` | `contracting` | `get_contracting()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
 | `csdac-pln` | `csdac_pln` | `get_csdac()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `his-wlk-cal` | `demand` | `get_demand()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `his-wlk-cal` | `swm_p` | `get_swm_p()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `his-wlk-cal` | `swm_np` | `get_swm_np()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `his-wlk-cal` | `jg` | `get_jg()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `his-wlk-cal` | `jgw1` | `get_jgw1()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `his-wlk-cal` | `jgw2` | `get_jgw2()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `his-wlk-cal` | `jgm1` | `get_jgm1()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `his-wlk-cal` | `jgm2` | `get_jgm2()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `his-wlk-cal` | `jgz1` | `get_jgz1()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `his-wlk-cal` | `jgz2` | `get_jgz2()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `his-wlk-cal` | `jgz3` | `get_jgz3()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `his-wlk-cal` | `jga` | `get_jga()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `his-wlk-cal` | `jgo` | `get_jgo()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `his-wlk-cal` | `jnwrb` | `get_jnwrb()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `his-wlk-cal` | `jgm` | `get_jgm()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `his-wlk-cal` | `wi` | `get_wi()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
+| `his-wlk-cal` | `pv` | `get_pv()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
 | `kmb-kro-rozl` | `kmb` | `get_kmb()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
 | `kmb-kro-rozl` | `kro` | `get_kro()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
 | `krb-rozl` | `kb` | `get_kb()` | ![stable](https://img.shields.io/badge/stable-brightgreen) |
@@ -60,7 +77,6 @@ Every endpoint returns these columns plus endpoint-specific columns:
 | `gen-jw` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `his-bil-mocy` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `his-gen-pal` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
-| `his-wlk-cal` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `it-oeb-rbb` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `it-oeb-rbn` | | | ![planned](https://img.shields.io/badge/planned-yellow) |
 | `it-omb-rbb` | | | ![planned](https://img.shields.io/badge/planned-yellow) |

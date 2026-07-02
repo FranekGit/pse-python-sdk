@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import time
+from urllib.parse import quote
 
 import requests
 
@@ -38,19 +39,19 @@ class HTTPClient:
     ) -> dict:
         """Fetch a single page from the API."""
         url = f"{self.base_url}/{path}"
-        params: dict[str, str] = {}
+        params: list[str] = []
         if select:
-            params["$select"] = ",".join(select)
+            params.append("$select=" + quote(",".join(select), safe=","))
         if filter_expr:
-            params["$filter"] = filter_expr
+            params.append("$filter=" + quote(filter_expr, safe="'"))
         if order_by:
-            params["$orderby"] = order_by
+            params.append("$orderby=" + quote(order_by))
         if first is not None:
-            params["$first"] = str(first)
+            params.append("$first=" + str(first))
         if after:
-            params["$after"] = after
+            params.append("$after=" + quote(after))
 
-        resp = self.session.get(url, params=params, timeout=self.timeout)
+        resp = self.session.get(url, params="&".join(params), timeout=self.timeout)
         resp.raise_for_status()
         return resp.json()
 
@@ -58,13 +59,20 @@ class HTTPClient:
         """GET *url* with retries on transient server errors."""
         for attempt in range(self._MAX_RETRIES + 1):
             resp = self.session.get(url, timeout=self.timeout)
-            if resp.status_code not in self._RETRY_STATUSES or attempt == self._MAX_RETRIES:
+            if (
+                resp.status_code not in self._RETRY_STATUSES
+                or attempt == self._MAX_RETRIES
+            ):
                 resp.raise_for_status()
                 return resp.json()
-            delay = self._BACKOFF_BASE * (2 ** attempt)
+            delay = self._BACKOFF_BASE * (2**attempt)
             logger.warning(
                 "HTTP %s from %s, retrying in %ss (%d/%d)",
-                resp.status_code, url, delay, attempt + 1, self._MAX_RETRIES,
+                resp.status_code,
+                url,
+                delay,
+                attempt + 1,
+                self._MAX_RETRIES,
             )
             time.sleep(delay)
 
