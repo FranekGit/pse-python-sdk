@@ -89,11 +89,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `PSEClient` class for interacting with the PSE public REST API
-- `OutputFormat` enum for controlling response format (JSON, CSV, XML)
+- `OutputFormat` type (`Literal["dict", "dataframe"]`) for controlling response
+  format: list of dicts or pandas DataFrame
 - `HTTPClient` for managing HTTP requests with pagination support
 - Coverage of the `price-cost` PSE API endpoint
 - Date normalization and validation utilities
-- Configurable `base_url` and `page_size` parameters
+- Configurable HTTP `timeout` parameter
 - Optional pandas integration via `pip install pse-sdk[pandas]`
 - Unit tests for PSEClient and HTTPClient
 
