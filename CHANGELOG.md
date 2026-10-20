@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Removed
+- **Breaking:** all 32 `get_*` methods of `PSEClient` (`get_cen`, `get_csdac`,
+  `get_kb`, `get_sk_cost`, `get_demand`, ...) and the internal `make_endpoint`
+  helper. Use `fetch()` with the endpoint and column instead:
+  `get_cen(s, e)` → `fetch("price-cost", s, e, columns=["cen_cost"])`.
+  `fetch()` also returns the `*_utc` meta columns.
+
 ## [1.5.1] - 2026-10-20
 
 ### Added

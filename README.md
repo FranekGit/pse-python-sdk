@@ -35,9 +35,6 @@ df = client.fetch(
     columns=["cen_cost", "ckoeb_cost"],
     format="dataframe",
 )
-
-# Single-column shortcut
-records = client.get_cen(start="2024-01-01", end="2024-01-31")
 ```
 
 ## Date Formats
