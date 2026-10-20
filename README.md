@@ -65,5 +65,13 @@ column and are not supported yet.
 
 ## Endpoints
 
-See [docs/endpoints.md](docs/endpoints.md) for available endpoints and their columns.
+List endpoints and their data columns without any HTTP request:
+
+```python
+client.endpoints()            # ["afrr-status", "cmbp-tp", ...]
+client.columns("price-cost")  # ["cen_cost", "ckoeb_cost", ...]
+```
+
+See [docs/endpoints.md](docs/endpoints.md) for all endpoints, their columns
+and types.
 
