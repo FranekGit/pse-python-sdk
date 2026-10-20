@@ -50,13 +50,25 @@ Run these from the project root with your venv activated:
 pytest
 
 # Lint
-ruff check src/
+ruff check src/ scripts/
 
 # Format
-ruff format src/
+ruff format src/ scripts/
 ```
 
 Fix any lint/test failures before opening a PR.
+
+## Endpoint Registry
+
+`src/pse_sdk/_registry.py` is generated from the PSE OpenAPI spec (`https://api.raporty.pse.pl/api/openapi`) — don't edit it by hand.
+
+```bash
+# Regenerate from the live spec
+python scripts/gen_registry.py
+
+# Check that the committed registry is up to date
+python scripts/gen_registry.py --check
+```
 
 ## Commit Convention
 
