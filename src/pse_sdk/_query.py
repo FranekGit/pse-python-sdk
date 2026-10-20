@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pse_sdk._endpoint_spec import EndpointSpec
 from pse_sdk._registry import REGISTRY
+from pse_sdk._validate import validate_endpoint
 
 
 def get_spec(endpoint: str) -> EndpointSpec:
@@ -12,10 +13,8 @@ def get_spec(endpoint: str) -> EndpointSpec:
     Raises:
         ValueError: If *endpoint* is not in the registry.
     """
-    try:
-        return REGISTRY[endpoint]
-    except KeyError:
-        raise ValueError(f"Unknown endpoint {endpoint!r}") from None
+    validate_endpoint(endpoint)
+    return REGISTRY[endpoint]
 
 
 def data_columns(spec: EndpointSpec) -> list[str]:

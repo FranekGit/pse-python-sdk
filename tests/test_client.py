@@ -56,6 +56,10 @@ class TestColumns:
         with pytest.raises(ValueError, match="Unknown endpoint 'nope'"):
             PSEClient.columns("nope")
 
+    def test_unknown_endpoint_suggests(self):
+        with pytest.raises(ValueError, match="Did you mean 'price-cost'"):
+            PSEClient.columns("price-cots")
+
     @pytest.mark.parametrize("name", REGISTRY)
     def test_registry_columns_no_meta(self, name):
         columns = PSEClient.columns(name)
@@ -127,6 +131,20 @@ class TestFetch:
     def test_unknown_endpoint_raises_before_request(self, pse):
         with pytest.raises(ValueError, match="Unknown endpoint 'nope'"):
             pse.fetch("nope", "2024-01-01", "2024-01-30")
+        pse.client.fetch_all.assert_not_called()
+
+    def test_unknown_endpoint_suggests(self, pse):
+        with pytest.raises(ValueError, match="Did you mean 'price-cost'"):
+            pse.fetch("price-cots", "2024-01-01", "2024-01-30")
+
+    def test_unknown_column_raises_before_request(self, pse):
+        with pytest.raises(ValueError, match="Unknown column 'cen_cots'.*'cen_cost'"):
+            pse.fetch("price-cost", "2024-01-01", "2024-01-30", columns=["cen_cots"])
+        pse.client.fetch_all.assert_not_called()
+
+    def test_str_columns_raises_before_request(self, pse):
+        with pytest.raises(TypeError, match="columns must be a list"):
+            pse.fetch("price-cost", "2024-01-01", "2024-01-30", columns="cen_cost")
         pse.client.fetch_all.assert_not_called()
 
     def test_invalid_date_range_raises_before_request(self, pse):
