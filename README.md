@@ -47,8 +47,10 @@ df = client.fetch(
 
 ## Date Formats
 
-Rows are filtered on `business_date`. `ogr-*-head` endpoints have no date
-column and are not supported yet.
+Rows are filtered on `business_date`, or on `period` (plan date) for
+`ogr-*-head` endpoints. On `ogr-d39-head`, `ogr-m-head` and `ogr-r-head` that
+is the plan's first day, so a range returns plans starting in it, not plans
+active in it.
 
 | Format       | Example      |
 |--------------|--------------|

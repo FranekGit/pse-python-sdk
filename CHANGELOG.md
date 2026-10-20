@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Unknown columns raise `ValueError` naming each one with a hint (close
   match, or other endpoints that have it) instead of an HTTP 400. `columns`
   that is not a list or tuple of strings raises `TypeError` (#25)
+- `fetch()` supports the six `ogr-*-head` endpoints, filtered on `period`
+  (#37)
 
 ### Changed
 - Unknown endpoint errors suggest the closest endpoint name (#25)
