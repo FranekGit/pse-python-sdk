@@ -14,6 +14,8 @@ dependencies = [
 
 [project.optional-dependencies]
 pandas = ["pandas>=1.5"]
+
+[dependency-groups]
 dev = [
     "pytest",
     "responses",
