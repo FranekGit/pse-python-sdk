@@ -138,7 +138,7 @@ class TestFetch:
             pse.fetch("price-cots", "2024-01-01", "2024-01-30")
 
     def test_unknown_column_raises_before_request(self, pse):
-        with pytest.raises(ValueError, match="Unknown column 'cen_cots'.*'cen_cost'"):
+        with pytest.raises(ValueError, match="Unknown column for endpoint 'price-cost': 'cen_cots'.*'cen_cost'"):
             pse.fetch("price-cost", "2024-01-01", "2024-01-30", columns=["cen_cots"])
         pse.client.fetch_all.assert_not_called()
 
