@@ -48,13 +48,25 @@ Run these from the project root:
 uv run pytest
 
 # Lint
-uv run ruff check src/
+uv run ruff check src/ scripts/
 
 # Format
-uv run ruff format src/
+uv run ruff format src/ scripts/
 ```
 
 Fix any lint/test failures before opening a PR.
+
+## Endpoint Registry
+
+`src/pse_sdk/_registry.py` is generated from the PSE OpenAPI spec (`https://api.raporty.pse.pl/api/openapi`) — don't edit it by hand.
+
+```bash
+# Regenerate from the live spec
+uv run scripts/gen_registry.py
+
+# Check that the committed registry is up to date
+uv run scripts/gen_registry.py --check
+```
 
 ## Dependencies
 
