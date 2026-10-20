@@ -15,10 +15,10 @@ SPEC = {
         keys=("dtime",),
     ),
     "csire-kpi10": EndpointSpec(
-        columns={"kpi": "number"}, date_column=None, meta_columns=(), keys=()
+        columns={"kpi": "number"}, date_column="business_date", meta_columns=(), keys=()
     ),
     "csire-kpi2": EndpointSpec(
-        columns={"kpi": "number"}, date_column=None, meta_columns=(), keys=()
+        columns={"kpi": "number"}, date_column="business_date", meta_columns=(), keys=()
     ),
 }
 

@@ -2,7 +2,7 @@ import typing
 
 import pytest
 
-from gen_registry import build_registry, parse_keys, render
+from gen_registry import build_registry, date_column, parse_keys, render
 from pse_sdk._registry import REGISTRY, Endpoint
 
 
@@ -86,8 +86,16 @@ class TestBuildRegistry:
     def test_date_column_business_date(self):
         assert build_registry(SPEC)["price-cost"]["date_column"] == "business_date"
 
-    def test_date_column_none_without_business_date(self):
-        assert build_registry(SPEC)["ogr-d1-head"]["date_column"] is None
+    def test_date_column_period_key(self):
+        assert build_registry(SPEC)["ogr-d1-head"]["date_column"] == "period"
+
+    def test_business_date_wins_over_period_key(self):
+        columns = {"period": "string", "business_date": "string"}
+        assert date_column("x", columns, ("period",)) == "business_date"
+
+    def test_unclassifiable_endpoint_raises(self):
+        with pytest.raises(ValueError, match="rcco2: no date column"):
+            date_column("rcco2", {"period": "string"}, ("dtime_utc",))
 
     def test_meta_columns_fixed_order(self):
         assert build_registry(SPEC)["price-cost"]["meta_columns"] == (
@@ -155,8 +163,8 @@ class TestCommittedRegistry:
             "ogr-r-head",
         ],
     )
-    def test_head_endpoints_have_no_date_column(self, name):
-        assert REGISTRY[name].date_column is None
+    def test_head_endpoints_filter_on_period(self, name):
+        assert REGISTRY[name].date_column == "period"
 
 
 @pytest.mark.parametrize("name", REGISTRY)
@@ -171,4 +179,4 @@ class TestRegistryInvariants:
 
     def test_date_column_is_column(self, name):
         spec = REGISTRY[name]
-        assert spec.date_column is None or spec.date_column in spec.columns
+        assert spec.date_column in spec.columns

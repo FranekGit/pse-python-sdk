@@ -128,10 +128,10 @@ class TestFetch:
             pse.fetch("price-cost", "2024-01-01", "2024-01-30", format="df")
         pse.client.fetch_all.assert_not_called()
 
-    def test_no_date_column_raises_before_request(self, pse):
-        with pytest.raises(ValueError, match="'ogr-d1-head' has no date column"):
-            pse.fetch("ogr-d1-head", "2024-01-01", "2024-01-30")
-        pse.client.fetch_all.assert_not_called()
+    def test_head_endpoint_filters_on_period(self, pse):
+        pse.fetch("ogr-d1-head", "2024-01-01", "2024-01-30")
+        filter_expr = pse.client.fetch_all.call_args.kwargs["filter_expr"]
+        assert filter_expr == "period ge '2024-01-01' and period le '2024-01-30'"
 
     def test_unknown_endpoint_raises_before_request(self, pse):
         with pytest.raises(ValueError, match="Unknown endpoint 'nope'"):
