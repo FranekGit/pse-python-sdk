@@ -1,7 +1,10 @@
+from unittest.mock import patch
+
 import pandas as pd
 import pytest
 
 from pse_sdk._client import PSEClient
+from pse_sdk._endpoints import COMMON_COLUMNS
 from pse_sdk._registry import REGISTRY
 
 EXPECTED_ENDPOINTS = [
@@ -153,3 +156,21 @@ class TestFetch:
             pse.fetch("price-cost", "2024-02-01", "2024-01-01")
         pse.client.fetch_all.assert_not_called()
 
+
+class TestGetMethods:
+    def test_keep_legacy_select(self):
+        with patch("pse_sdk._client.HTTPClient") as mock_http:
+            fetch_all = mock_http.return_value.fetch_all
+            fetch_all.return_value = []
+            PSEClient().get_cen("2024-01-01", "2024-01-30")
+        assert fetch_all.call_args.args == ("price-cost",)
+        assert fetch_all.call_args.kwargs == {
+            "select": COMMON_COLUMNS + ["cen_cost"],
+            "filter_expr": "business_date ge '2024-01-01' and business_date le '2024-01-30'",
+        }
+
+    def test_invalid_format_raises_before_request(self):
+        with patch("pse_sdk._client.HTTPClient") as mock_http:
+            with pytest.raises(ValueError, match="format must be"):
+                PSEClient().get_cen("2024-01-01", "2024-01-30", format="df")
+        mock_http.return_value.fetch_all.assert_not_called()
