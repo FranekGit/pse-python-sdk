@@ -11,8 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `PSEClient.endpoints()`: names of all endpoints
 - `PSEClient.columns(endpoint)`: data columns of an endpoint, in API order
   (meta columns left out). Both read the bundled registry, no HTTP request.
+- `fetch()` checks column names against the registry before any request.
+  Unknown columns raise `ValueError` naming each one with a hint (close
+  match, or other endpoints that have it) instead of an HTTP 400. `columns`
+  that is not a list or tuple of strings raises `TypeError` (#25)
 
 ### Changed
+- Unknown endpoint errors suggest the closest endpoint name (#25)
+- `HTTPError` from the API includes the API's error message, e.g.
+  `Invalid field to be returned requested: cen_cots`
 - `docs/endpoints.md` is generated from the endpoint registry
   (`scripts/gen_docs.py`) and lists the data columns of all 90 endpoints,
   including the previously missing `wmb` and `his-gen-pal-sire`. The
