@@ -62,10 +62,10 @@ Fix any lint/test failures before opening a PR.
 
 ```bash
 # Regenerate from the live spec
-python scripts/gen_registry.py
+uv run scripts/gen_registry.py
 
 # Check that the committed registry is up to date
-python scripts/gen_registry.py --check
+uv run scripts/gen_registry.py --check
 ```
 
 ## Dependencies
