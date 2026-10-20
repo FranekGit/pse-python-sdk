@@ -26,6 +26,8 @@ packages = ["src/pse_sdk"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["scripts"]
 
 [tool.ruff]
 src = ["src"]
+extend-exclude = ["src/pse_sdk/_registry.py"]
