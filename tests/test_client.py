@@ -23,6 +23,46 @@ class TestPSEClient:
         )
 
 
+class TestEndpoints:
+    def test_all_registry_endpoints_sorted(self):
+        assert PSEClient.endpoints() == sorted(REGISTRY)
+
+    def test_callable_on_instance(self, mock_http):
+        assert PSEClient().endpoints() == PSEClient.endpoints()
+
+    def test_returns_new_list(self):
+        PSEClient.endpoints().clear()
+        assert PSEClient.endpoints()
+
+
+class TestColumns:
+    def test_data_columns_in_api_order(self):
+        assert PSEClient.columns("price-cost") == [
+            "cen_cost",
+            "ckoeb_cost",
+            "ceb_sr_cost",
+            "cor_pp_cost",
+            "imb_energy",
+            "contracting",
+        ]
+
+    def test_key_columns_included(self):
+        assert {"resource_code", "operating_mode"} <= set(PSEClient.columns("gen-jw"))
+
+    def test_callable_on_instance(self, mock_http):
+        assert PSEClient().columns("price-cost") == PSEClient.columns("price-cost")
+
+    def test_unknown_endpoint_raises(self):
+        with pytest.raises(ValueError, match="Unknown endpoint 'nope'"):
+            PSEClient.columns("nope")
+
+    @pytest.mark.parametrize("name", REGISTRY)
+    def test_registry_columns_no_meta(self, name):
+        columns = PSEClient.columns(name)
+        assert columns
+        assert not set(columns) & set(REGISTRY[name].meta_columns)
+
+
 @pytest.fixture()
 def pse(mock_http):
     client = PSEClient()

@@ -14,6 +14,7 @@ import sys
 from pathlib import Path
 
 from pse_sdk._endpoint_spec import EndpointSpec
+from pse_sdk._query import data_columns
 from pse_sdk._registry import REGISTRY
 
 OUTPUT = Path(__file__).resolve().parents[1] / "docs" / "endpoints.md"
@@ -43,9 +44,8 @@ def render(registry: dict[str, EndpointSpec]) -> str:
     rows = []
     for name in sorted(registry, key=natural_key):
         spec = registry[name]
-        for column, type_ in spec.columns.items():
-            if column not in spec.meta_columns:
-                rows.append(f"| `{name}` | `{column}` | {type_} |\n")
+        for column in data_columns(spec):
+            rows.append(f"| `{name}` | `{column}` | {spec.columns[column]} |\n")
     return HEADER + "".join(rows)
 
 
