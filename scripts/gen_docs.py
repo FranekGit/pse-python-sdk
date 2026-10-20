@@ -17,11 +17,20 @@ HEADER = """\
 
 > API reference: `https://api.raporty.pse.pl/api/openapi`
 
-Data columns of every endpoint, in API order. Meta columns (`dtime`, `period`,
-`business_date`, `publication_ts` and their `*_utc` variants) are left out;
-`fetch()` returns them with every request.
+See [usage.md](usage.md) for how `fetch()` uses these columns.
+
+## Data columns
+
+In API order. Meta columns are left out.
 
 | Endpoint | Column | Type |
+|---|---|---|
+"""
+
+KEYS_HEADER = """
+## Date and key columns
+
+| Endpoint | Date column | Key columns |
 |---|---|---|
 """
 
@@ -31,14 +40,21 @@ def natural_key(name: str) -> list[str | int]:
     return [int(part) if part.isdigit() else part for part in re.split(r"(\d+)", name)]
 
 
+def _code(names: tuple[str, ...]) -> str:
+    """Join *names* as inline code, or ``-`` if empty."""
+    return ", ".join(f"`{name}`" for name in names) or "-"
+
+
 def render(registry: dict[str, EndpointSpec]) -> str:
-    """Render the endpoints table for *registry*."""
-    rows = []
+    """Render the data and key columns tables for *registry*."""
+    data_rows = []
+    key_rows = []
     for name in sorted(registry, key=natural_key):
         spec = registry[name]
         for column in data_columns(spec):
-            rows.append(f"| `{name}` | `{column}` | {spec.columns[column]} |\n")
-    return HEADER + "".join(rows)
+            data_rows.append(f"| `{name}` | `{column}` | {spec.columns[column]} |\n")
+        key_rows.append(f"| `{name}` | `{spec.date_column}` | {_code(spec.keys)} |\n")
+    return HEADER + "".join(data_rows) + KEYS_HEADER + "".join(key_rows)
 
 
 def _check(source: str) -> int:

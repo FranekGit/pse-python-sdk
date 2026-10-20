@@ -24,10 +24,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `Invalid field to be returned requested: cen_cots`
 - `docs/endpoints.md` is generated from the endpoint registry
   (`scripts/gen_docs.py`) and lists the data columns of all 90 endpoints,
-  including the previously missing `wmb` and `his-gen-pal-sire`. The
-  Description column is dropped.
-- `fetch()` column and date-filter notes moved from `docs/endpoints.md` to
-  the README
+  including the previously missing `wmb` and `his-gen-pal-sire`, plus the
+  date and key columns of each. The Description column is dropped.
+- `fetch()` column and date-filter notes moved from `docs/endpoints.md` and
+  the README to the new `docs/usage.md`
 
 ### Removed
 - **Breaking:** all 32 `get_*` methods of `PSEClient` (`get_cen`, `get_csdac`,

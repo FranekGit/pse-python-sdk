@@ -1,4 +1,4 @@
-from gen_docs import HEADER, OUTPUT, natural_key, render
+from gen_docs import HEADER, KEYS_HEADER, OUTPUT, natural_key, render
 from pse_sdk._endpoint_spec import EndpointSpec
 from pse_sdk._registry import REGISTRY
 
@@ -24,7 +24,11 @@ SPEC = {
 
 
 def _rows(source: str) -> list[str]:
-    return source.removeprefix(HEADER).splitlines()
+    return source.removeprefix(HEADER).split(KEYS_HEADER)[0].splitlines()
+
+
+def _key_rows(source: str) -> list[str]:
+    return source.split(KEYS_HEADER)[1].splitlines()
 
 
 class TestNaturalKey:
@@ -60,6 +64,13 @@ class TestRender:
             "| `price-cost` | `contracting` | string |",
         ]
 
+    def test_key_rows(self):
+        assert _key_rows(render(SPEC)) == [
+            "| `csire-kpi2` | `business_date` | - |",
+            "| `csire-kpi10` | `business_date` | - |",
+            "| `price-cost` | `business_date` | `dtime` |",
+        ]
+
 
 class TestCommittedDocs:
     def test_up_to_date(self):
@@ -68,3 +79,7 @@ class TestCommittedDocs:
     def test_all_endpoints_listed(self):
         endpoints = {row.split("`")[1] for row in _rows(render(REGISTRY))}
         assert endpoints == set(REGISTRY)
+
+    def test_all_endpoints_in_key_table(self):
+        endpoints = [row.split("`")[1] for row in _key_rows(render(REGISTRY))]
+        assert sorted(endpoints) == sorted(REGISTRY)
