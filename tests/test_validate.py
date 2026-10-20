@@ -57,24 +57,24 @@ class TestValidateColumns:
 
     def test_typo_suggests(self):
         assert error(validate_columns, "price-cost", ["cen_cots"]) == (
-            "Unknown column 'cen_cots' for endpoint 'price-cost'. "
-            "Did you mean 'cen_cost'?"
+            "Unknown column for endpoint 'price-cost': "
+            "'cen_cots' (did you mean 'cen_cost'?)."
         )
 
     def test_typo_ignores_case(self):
         assert error(validate_columns, "price-cost", ["CEN_COST"]).endswith(
-            "Did you mean 'cen_cost'?"
+            "(did you mean 'cen_cost'?)."
         )
 
     def test_column_of_other_endpoints(self):
         assert error(validate_columns, "kse-load", ["cen_cost"]) == (
-            "Unknown column 'cen_cost' for endpoint 'kse-load'. "
-            "Found in: crb-rozl, energy-prices, price-cost."
+            "Unknown column for endpoint 'kse-load': "
+            "'cen_cost' (found in: crb-rozl, energy-prices, price-cost)."
         )
 
     def test_no_match_points_to_columns(self):
         assert error(validate_columns, "price-cost", ["foo"]) == (
-            "Unknown column 'foo' for endpoint 'price-cost'. "
+            "Unknown column for endpoint 'price-cost': 'foo'. "
             "See PSEClient.columns('price-cost')."
         )
 
@@ -96,8 +96,8 @@ class TestValidateColumns:
 
     def test_meta_column_missing_on_endpoint(self):
         message = error(validate_columns, "rcco2", ["dtime"])
-        assert message.startswith("Unknown column 'dtime' for endpoint 'rcco2'.")
-        assert "Found in" not in message
+        assert message.startswith("Unknown column for endpoint 'rcco2': 'dtime'")
+        assert "found in" not in message
 
     @pytest.mark.parametrize("columns", ["cen_cost", {"cen_cost"}, iter(["cen_cost"])])
     def test_not_list_raises(self, columns):
