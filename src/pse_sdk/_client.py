@@ -1,7 +1,11 @@
 from __future__ import annotations
 
+from pse_sdk._dates import normalize_date_range, split_date_range
 from pse_sdk._endpoints import make_endpoint
+from pse_sdk._format import OutputFormat, convert, validate_format
 from pse_sdk._http import HTTPClient
+from pse_sdk._query import build_select, date_clauses, get_spec
+from pse_sdk._registry import Endpoint
 
 
 class PSEClient:
@@ -14,8 +18,14 @@ class PSEClient:
 
         from pse_sdk import PSEClient
         pse = PSEClient()
-        records = pse.get_cen("2024-01-01", "2024-01-31")
-        df = pse.get_price_cost("2024-01-01", "2024-01-31", format="dataframe")
+        records = pse.fetch("price-cost", "2024-01-01", "2024-01-31")
+        df = pse.fetch(
+            "price-cost",
+            "2024-01-01",
+            "2024-01-31",
+            columns=["cen_cost", "ckoeb_cost"],
+            format="dataframe",
+        )
     """
 
     _BASE_URL = "https://api.raporty.pse.pl/api"
@@ -131,3 +141,61 @@ class PSEClient:
         self.get_pv = make_endpoint(
             client=self.client, path="his-wlk-cal", columns=["pv"]
         )
+
+    def fetch(
+        self,
+        endpoint: Endpoint,
+        start: str,
+        end: str,
+        *,
+        columns: list[str] | None = None,
+        format: OutputFormat = "dict",
+    ):
+        """Query *endpoint* for a date range.
+
+        Args:
+            endpoint: Endpoint name, e.g. ``"price-cost"``.
+            start: Begin of range (``YYYY-MM-DD``, ``YYYY/MM/DD``, or ``YYYYMMDD``).
+            end: End of range (``YYYY-MM-DD``, ``YYYY/MM/DD``, or ``YYYYMMDD``).
+            columns: Data columns to return. The endpoint's meta and key
+                columns are always included. ``None`` (default) returns all
+                columns.
+            format: Output format — ``"dict"`` (default) or ``"dataframe"``.
+
+        Raises:
+            TypeError: If *start* or *end* is not a string.
+            ValueError: If *endpoint* is unknown or has no date column,
+                *format* is not supported, a date string cannot be parsed,
+                or *start* is after *end*.
+        """
+        select = build_select(get_spec(endpoint), columns)
+        return self._fetch(endpoint, start, end, select=select, format=format)
+
+    def _fetch(
+        self,
+        endpoint: str,
+        start: str,
+        end: str,
+        *,
+        select: list[str] | None,
+        format: OutputFormat,
+    ):
+        """Fetch *select* columns of *endpoint* in 30-day chunks of the range."""
+        validate_format(format)
+        spec = get_spec(endpoint)
+        if spec.date_column is None:
+            raise ValueError(
+                f"Endpoint {endpoint!r} has no date column and is not supported yet"
+            )
+        start_str, end_str = normalize_date_range(start, end)
+
+        records: list[dict] = []
+        for chunk_start, chunk_end in split_date_range(start_str, end_str):
+            filter_expr = " and ".join(
+                date_clauses(spec.date_column, chunk_start, chunk_end)
+            )
+            records.extend(
+                self.client.fetch_all(endpoint, select=select, filter_expr=filter_expr)
+            )
+
+        return convert(records, format)
