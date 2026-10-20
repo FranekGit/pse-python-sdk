@@ -53,6 +53,30 @@ class HTTPClient:
 
         return self._request_with_retry(url, params="&".join(params))
 
+    def fetch_all(
+        self,
+        path: str,
+        *,
+        select: list[str] | None = None,
+        filter_expr: str | None = None,
+        order_by: str | None = None,
+    ) -> list[dict]:
+        """Fetch all pages, auto-paginating via nextLink."""
+        data = self.fetch(
+            path,
+            select=select,
+            filter_expr=filter_expr,
+            order_by=order_by,
+            first=self.page_size,
+        )
+        records: list[dict] = data.get("value", [])
+
+        while "nextLink" in data:
+            data = self._request_with_retry(data["nextLink"])
+            records.extend(data.get("value", []))
+
+        return records
+
     def _request_with_retry(self, url: str, params: str | None = None) -> dict:
         """GET *url* with retries on transient server errors."""
         for attempt in range(self._MAX_RETRIES + 1):
@@ -92,27 +116,3 @@ class HTTPClient:
             return resp.json()["error"]["message"]
         except (ValueError, KeyError, TypeError):  # non-JSON or unexpected shape
             return None
-
-    def fetch_all(
-        self,
-        path: str,
-        *,
-        select: list[str] | None = None,
-        filter_expr: str | None = None,
-        order_by: str | None = None,
-    ) -> list[dict]:
-        """Fetch all pages, auto-paginating via nextLink."""
-        data = self.fetch(
-            path,
-            select=select,
-            filter_expr=filter_expr,
-            order_by=order_by,
-            first=self.page_size,
-        )
-        records: list[dict] = data.get("value", [])
-
-        while "nextLink" in data:
-            data = self._request_with_retry(data["nextLink"])
-            records.extend(data.get("value", []))
-
-        return records
