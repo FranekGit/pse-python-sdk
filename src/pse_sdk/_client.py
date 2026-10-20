@@ -8,7 +8,7 @@ from pse_sdk._registry import REGISTRY, Endpoint
 
 
 class PSEClient:
-    """Client for the PSE (Polskie Sieci Elektoenergetyczne) reporting API.
+    """Client for the PSE (Polskie Sieci Elektroenergetyczne) reporting API.
 
     Args:
         timeout: HTTP timeout in seconds.
