@@ -76,7 +76,9 @@ def pse(mock_http):
 
 class TestFetch:
     def test_select_meta_keys_and_columns(self, pse):
-        pse.fetch("price-cost", "2024-01-01", "2024-01-15", columns=["cen_cost", "ckoeb_cost"])
+        pse.fetch(
+            "price-cost", "2024-01-01", "2024-01-15", columns=["cen_cost", "ckoeb_cost"]
+        )
         assert pse.client.fetch_all.call_count == 1
         assert pse.client.fetch_all.call_args.args == ("price-cost",)
         assert pse.client.fetch_all.call_args.kwargs["select"] == [
@@ -97,7 +99,10 @@ class TestFetch:
     def test_filter_on_date_column(self, pse):
         pse.fetch("price-cost", "2024-01-01", "2024-01-30")
         filter_expr = pse.client.fetch_all.call_args.kwargs["filter_expr"]
-        assert filter_expr == "business_date ge '2024-01-01' and business_date le '2024-01-30'"
+        assert (
+            filter_expr
+            == "business_date ge '2024-01-01' and business_date le '2024-01-30'"
+        )
 
     def test_long_range_chunked(self, pse):
         pse.fetch("price-cost", "2024-01-01", "2024-02-29")
@@ -138,7 +143,10 @@ class TestFetch:
             pse.fetch("price-cots", "2024-01-01", "2024-01-30")
 
     def test_unknown_column_raises_before_request(self, pse):
-        with pytest.raises(ValueError, match="Unknown column for endpoint 'price-cost': 'cen_cots'.*'cen_cost'"):
+        with pytest.raises(
+            ValueError,
+            match="Unknown column for endpoint 'price-cost': 'cen_cots'.*'cen_cost'",
+        ):
             pse.fetch("price-cost", "2024-01-01", "2024-01-30", columns=["cen_cots"])
         pse.client.fetch_all.assert_not_called()
 

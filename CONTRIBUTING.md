@@ -48,10 +48,10 @@ Run these from the project root:
 uv run pytest
 
 # Lint
-uv run ruff check src/ scripts/
+uv run ruff check src/ scripts/ tests/
 
 # Format
-uv run ruff format src/ scripts/
+uv run ruff format src/ scripts/ tests/
 ```
 
 Fix any lint/test failures before opening a PR.

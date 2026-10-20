@@ -31,10 +31,16 @@ class TestNormalizeDate:
 
 class TestNormalizeDateRange:
     def test_equal_dates_pass(self):
-        assert normalize_date_range("2024-01-01", "2024-01-01") == ("2024-01-01", "2024-01-01")
+        assert normalize_date_range("2024-01-01", "2024-01-01") == (
+            "2024-01-01",
+            "2024-01-01",
+        )
 
     def test_start_before_end_pass(self):
-        assert normalize_date_range("2024-01-01", "2024-01-31") == ("2024-01-01", "2024-01-31")
+        assert normalize_date_range("2024-01-01", "2024-01-31") == (
+            "2024-01-01",
+            "2024-01-31",
+        )
 
     def test_start_after_end_raises(self):
         with pytest.raises(ValueError, match="must not be after"):
