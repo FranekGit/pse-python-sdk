@@ -44,9 +44,6 @@ df = client.fetch(
   (`dtime`, `period`, `business_date`, `publication_ts` and their `*_utc`
   variants, where present) and key columns (e.g. `resource_code` on `gen-jw`),
   so every row stays identifiable.
-- Endpoint and column names are checked against the bundled registry before
-  any request. Unknown names raise `ValueError` with a hint:
-  `Unknown column 'cen_cots' for endpoint 'price-cost'. Did you mean 'cen_cost'?`
 
 ## Date Formats
 
