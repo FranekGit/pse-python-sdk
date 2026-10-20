@@ -3,9 +3,11 @@
 
 > API reference: `https://api.raporty.pse.pl/api/openapi`
 
-Data columns of every endpoint, in API order. Meta columns (`dtime`, `period`,
-`business_date`, `publication_ts` and their `*_utc` variants) are left out;
-`fetch()` returns them with every request.
+See [usage.md](usage.md) for how `fetch()` uses these columns.
+
+## Data columns
+
+In API order. Meta columns are left out.
 
 | Endpoint | Column | Type |
 |---|---|---|
@@ -781,3 +783,98 @@ Data columns of every endpoint, in API order. Meta columns (`dtime`, `period`,
 | `zmb` | `zmb_afrrd` | number |
 | `zmb` | `zmb_rrg` | number |
 | `zmb` | `zmb_rrd` | number |
+
+## Date and key columns
+
+| Endpoint | Date column | Key columns |
+|---|---|---|
+| `afrr-status` | `business_date` | `event_time_utc`, `afrr_status`, `reason_code` |
+| `cmbp-tp` | `business_date` | `dtime_utc` |
+| `cmbu-tu` | `business_date` | `dtime_utc` |
+| `codn` | `business_date` | `business_date`, `period_from_date`, `period_to_date` |
+| `cor` | `business_date` | `dtime_utc` |
+| `cor-q-1` | `business_date` | `business_date`, `period_to_date`, `period_from_date` |
+| `cordmax` | `business_date` | `business_date`, `cordmax_fcst`, `cordmax_cost` |
+| `crb-rozl` | `business_date` | `dtime_utc` |
+| `csdac-pln` | `business_date` | `dtime_utc` |
+| `csire-kpi1` | `business_date` | `business_date`, `row_no` |
+| `csire-kpi2` | `business_date` | `business_date`, `row_no` |
+| `csire-kpi3` | `business_date` | `business_date`, `row_no` |
+| `csire-kpi4` | `business_date` | `business_date`, `row_no` |
+| `csire-kpi5` | `business_date` | `business_date`, `row_no` |
+| `csire-kpi6` | `business_date` | `business_date`, `row_no` |
+| `csire-kpi7` | `business_date` | `business_date`, `row_no` |
+| `csire-kpi8` | `business_date` | `business_date`, `row_no` |
+| `csire-kpi9` | `business_date` | `business_date`, `row_no` |
+| `csire-kpi10` | `business_date` | `business_date`, `row_no` |
+| `eb-rozl` | `business_date` | `dtime_utc` |
+| `en-rozl` | `business_date` | `dtime_utc` |
+| `energy-prices` | `business_date` | `dtime_utc` |
+| `gen-jw` | `business_date` | `dtime_utc`, `resource_code`, `operating_mode` |
+| `his-bil-mocy` | `business_date` | `business_date`, `peak_hour`, `peak` |
+| `his-gen-pal` | `business_date` | `business_date`, `dtime_utc`, `alias_entsoe` |
+| `his-gen-pal-sire` | `business_date` | `business_date`, `dtime_utc`, `alias_sire`, `alias_entsoe` |
+| `his-wlk-cal` | `business_date` | `dtime_utc` |
+| `it-oeb-rbb` | `business_date` | `business_date`, `iteration_no` |
+| `it-oeb-rbn` | `business_date` | `business_date`, `iteration_no` |
+| `it-omb-rbb` | `business_date` | `business_date`, `iteration_no` |
+| `it-omb-rbn` | `business_date` | `business_date`, `iteration_no` |
+| `it-opmb-rmb` | `business_date` | `business_date`, `iteration_no` |
+| `it-ot-rbn` | `business_date` | `business_date`, `iteration_no` |
+| `it-pp-rbb` | `business_date` | `business_date`, `iteration_no` |
+| `it-pp-rbn` | `business_date` | `business_date`, `iteration_no` |
+| `it-use-rbb` | `business_date` | `business_date`, `iteration_no` |
+| `it-use-rbn` | `business_date` | `business_date`, `iteration_no` |
+| `kmb-kro-rozl` | `business_date` | `dtime_utc` |
+| `krb-rozl` | `business_date` | `dtime_utc` |
+| `kse-load` | `business_date` | `dtime_utc` |
+| `lolp` | `business_date` | `business_date`, `dtime_utc` |
+| `mbp-tp` | `business_date` | `dtime_utc` |
+| `mbu-tu` | `business_date` | `dtime_utc` |
+| `oeb-bpkdbo` | `business_date` | `dtime_utc`, `activ_direction`, `ofp`, `ofc`, `cdo` |
+| `ogr-b` | `business_date` | `node`, `business_date`, `to_dtime_utc`, `from_dtime_utc`, `period` |
+| `ogr-b-head` | `business_date` | `business_date` |
+| `ogr-d1` | `business_date` | `node`, `business_date`, `to_dtime`, `from_dtime` |
+| `ogr-d1-head` | `period` | `period` |
+| `ogr-d2` | `business_date` | `node`, `business_date`, `to_dtime`, `from_dtime` |
+| `ogr-d2-head` | `period` | `period` |
+| `ogr-d39` | `business_date` | `node`, `business_date`, `to_dtime`, `from_dtime` |
+| `ogr-d39-head` | `period` | `period` |
+| `ogr-m` | `business_date` | `node`, `business_date`, `to_dtime`, `from_dtime` |
+| `ogr-m-head` | `period` | `period` |
+| `ogr-oper` | `business_date` | `node`, `business_date`, `to_dtime`, `from_dtime` |
+| `ogr-oper-head` | `period` | `period` |
+| `ogr-r` | `business_date` | `node`, `business_date`, `to_dtime`, `from_dtime`, `period` |
+| `ogr-r-head` | `period` | `period` |
+| `ogr-rmb` | `business_date` | `from_dtime`, `node` |
+| `pdgobpkd` | `business_date` | `dtime_utc`, `business_date` |
+| `pdgopkd` | `business_date` | `dtime_utc`, `business_date` |
+| `pdgsz` | `business_date` | `dtime_utc`, `valid_from_ts`, `valid_to_ts` |
+| `pdwkseub` | `business_date` | `dtime_utc`, `resource_code` |
+| `pk5l-wp` | `business_date` | `plan_dtime_utc` |
+| `poeb-rbb` | `business_date` | `business_date`, `dtime_utc`, `ofcg`, `ofcd`, `ofp` |
+| `poeb-rbn` | `business_date` | `business_date`, `dtime_utc`, `ofcg`, `ofcd`, `ofp` |
+| `pomb-rbn` | `business_date` | `dtime_utc`, `pofmin`, `pofmax`, `plofmin`, `plofmax`, `ofc`, `reserve_type` |
+| `popmb-rmb` | `business_date` | `dtime_utc`, `pom`, `com`, `comrr`, `reserve_type` |
+| `poze-redoze` | `business_date` | `business_date`, `period` |
+| `price-cost` | `business_date` | `dtime_utc` |
+| `price-fcst` | `business_date` | `dtime_utc` |
+| `przeplywy-mocy` | `business_date` | `dtime_utc`, `section_code` |
+| `pwm-dost-op` | `business_date` | `business_date`, `dtime_utc` |
+| `pwm-igcc-in` | `business_date` | `business_date`, `dtime_utc` |
+| `pwm-rdb` | `business_date` | `business_date`, `dtime_utc` |
+| `pwm-rdn` | `business_date` | `business_date`, `dtime_utc` |
+| `pwm-rdn-rdb` | `business_date` | `business_date`, `dtime_utc` |
+| `rcco2` | `business_date` | `business_date`, `rcco2_pln` |
+| `rce-pln` | `business_date` | `dtime_utc` |
+| `ro-prog` | `business_date` | `dtime_utc` |
+| `ro-rozl` | `business_date` | `dtime_utc` |
+| `sk` | `business_date` | `dtime_utc` |
+| `specwezlow` | `business_date` | `business_date`, `regional_dispatch_center` |
+| `unav-pk5l` | `business_date` | `power_plant`, `unit_code`, `start_dtime_utc`, `end_dtime_utc` |
+| `use-sprz-rbb` | `business_date` | `dtime_utc` |
+| `use-sprz-rbn` | `business_date` | `dtime_utc` |
+| `wmb` | `business_date` | `dtime_utc` |
+| `wsp-wrm` | `business_date` | `dtime_utc` |
+| `zeb-rozl` | `business_date` | `dtime` |
+| `zmb` | `business_date` | `dtime_utc` |
