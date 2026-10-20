@@ -37,7 +37,18 @@ df = client.fetch(
 )
 ```
 
+## Columns
+
+- `columns=None` returns all columns.
+- `columns=[...]` returns these columns plus the endpoint's meta columns
+  (`dtime`, `period`, `business_date`, `publication_ts` and their `*_utc`
+  variants, where present) and key columns (e.g. `resource_code` on `gen-jw`),
+  so every row stays identifiable.
+
 ## Date Formats
+
+Rows are filtered on `business_date`. `ogr-*-head` endpoints have no date
+column and are not supported yet.
 
 | Format       | Example      |
 |--------------|--------------|
@@ -54,5 +65,5 @@ df = client.fetch(
 
 ## Endpoints
 
-See [docs/endpoints.md](docs/endpoints.md) for available endpoints.
+See [docs/endpoints.md](docs/endpoints.md) for available endpoints and their columns.
 

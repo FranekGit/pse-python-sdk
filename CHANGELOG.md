@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- `docs/endpoints.md` is generated from the endpoint registry
+  (`scripts/gen_docs.py`) and lists the data columns of all 90 endpoints,
+  including the previously missing `wmb` and `his-gen-pal-sire`. The
+  Description column is dropped.
+- `fetch()` column and date-filter notes moved from `docs/endpoints.md` to
+  the README
+
 ### Removed
 - **Breaking:** all 32 `get_*` methods of `PSEClient` (`get_cen`, `get_csdac`,
   `get_kb`, `get_sk_cost`, `get_demand`, ...) and the internal `make_endpoint`

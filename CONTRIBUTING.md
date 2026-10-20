@@ -68,6 +68,18 @@ uv run scripts/gen_registry.py
 uv run scripts/gen_registry.py --check
 ```
 
+## Endpoint Docs
+
+`docs/endpoints.md` is generated from the registry — don't edit it by hand. Regenerate it after any registry change.
+
+```bash
+# Regenerate
+uv run scripts/gen_docs.py
+
+# Check that the committed docs are up to date
+uv run scripts/gen_docs.py --check
+```
+
 ## Dependencies
 
 Dev dependencies live in the `dev` dependency group in `pyproject.toml`; exact versions are pinned in `uv.lock`.
