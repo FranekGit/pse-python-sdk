@@ -63,6 +63,7 @@ class TestFetch:
         c = HTTPClient(BASE_URL, 10, 5)
         with pytest.raises(requests.exceptions.HTTPError):
             c.fetch("data")
+        assert len(responses.calls) == 1
 
 
 class TestFetchAll:
@@ -179,3 +180,39 @@ class TestRetry:
         c = HTTPClient(BASE_URL, 10, 5)
         result = c.fetch_all("data")
         assert result == [{"a": 1}, {"a": 2}]
+
+    @responses.activate
+    @patch("pse_sdk._http.time.sleep")
+    def test_first_page_retry_on_503_then_success(self, mock_sleep):
+        responses.get(f"{BASE_URL}/data", status=503)
+        responses.get(f"{BASE_URL}/data", json={"value": [{"a": 1}]})
+
+        c = HTTPClient(BASE_URL, 10, 5)
+        result = c.fetch_all("data")
+        assert result == [{"a": 1}]
+        mock_sleep.assert_called_once_with(1)
+
+    @responses.activate
+    @patch("pse_sdk._http.time.sleep")
+    def test_first_page_retry_exhaustion_raises(self, mock_sleep):
+        for _ in range(4):
+            responses.get(f"{BASE_URL}/data", status=500)
+
+        c = HTTPClient(BASE_URL, 10, 5)
+        with pytest.raises(requests.exceptions.HTTPError):
+            c.fetch_all("data")
+        assert mock_sleep.call_count == 3
+
+    @responses.activate
+    @patch("pse_sdk._http.time.sleep")
+    def test_first_page_retry_keeps_query_params(self, mock_sleep):
+        responses.get(f"{BASE_URL}/data", status=503)
+        responses.get(f"{BASE_URL}/data", json={"value": []})
+
+        c = HTTPClient(BASE_URL, 25, 5)
+        c.fetch_all("data", select=["a", "b"], filter_expr="x eq 1")
+        assert len(responses.calls) == 2
+        params = parse_qs(urlparse(responses.calls[1].request.url).query)
+        assert params["$first"] == ["25"]
+        assert params["$select"] == ["a,b"]
+        assert params["$filter"] == ["x eq 1"]

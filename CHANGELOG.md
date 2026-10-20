@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `get_cen(s, e)` → `fetch("price-cost", s, e, columns=["cen_cost"])`.
   `fetch()` also returns the `*_utc` meta columns.
 
+### Fixed
+- First page request of `fetch()` now retried on 5xx errors, like later
+  pages (#32)
+
 ## [1.5.1] - 2026-10-20
 
 ### Added
