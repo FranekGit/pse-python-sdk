@@ -37,20 +37,10 @@ df = client.fetch(
 )
 ```
 
-## Columns
-
-- `columns=None` returns all columns.
-- `columns=[...]` returns these columns plus the endpoint's meta columns
-  (`dtime`, `period`, `business_date`, `publication_ts` and their `*_utc`
-  variants, where present) and key columns (e.g. `resource_code` on `gen-jw`),
-  so every row stays identifiable.
+See [docs/usage.md](docs/usage.md) for which columns are returned and how rows
+are filtered by date.
 
 ## Date Formats
-
-Rows are filtered on `business_date`, or on `period` (plan date) for
-`ogr-*-head` endpoints. On `ogr-d39-head`, `ogr-m-head` and `ogr-r-head` that
-is the plan's first day, so a range returns plans starting in it, not plans
-active in it.
 
 | Format       | Example      |
 |--------------|--------------|
