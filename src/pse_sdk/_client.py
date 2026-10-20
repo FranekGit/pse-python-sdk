@@ -5,6 +5,7 @@ from pse_sdk._format import OutputFormat, convert, validate_format
 from pse_sdk._http import HTTPClient
 from pse_sdk._query import build_select, data_columns, date_clauses, get_spec
 from pse_sdk._registry import REGISTRY, Endpoint
+from pse_sdk._validate import validate_columns
 
 
 class PSEClient:
@@ -80,13 +81,15 @@ class PSEClient:
             format: Output format — ``"dict"`` (default) or ``"dataframe"``.
 
         Raises:
-            TypeError: If *start* or *end* is not a string.
-            ValueError: If *endpoint* is unknown or has no date column,
-                *format* is not supported, a date string cannot be parsed,
-                or *start* is after *end*.
+            TypeError: If *start* or *end* is not a string, or *columns* is
+                not a list of strings.
+            ValueError: If *endpoint* or a column is unknown, *endpoint* has
+                no date column, *format* is not supported, a date string
+                cannot be parsed, or *start* is after *end*.
         """
         spec = get_spec(endpoint)
         validate_format(format)
+        validate_columns(endpoint, columns)
         if spec.date_column is None:
             raise ValueError(
                 f"Endpoint {endpoint!r} has no date column and is not supported yet"
