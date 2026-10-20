@@ -96,7 +96,9 @@ class TestFetch:
         c = HTTPClient(BASE_URL, 10, 5)
         with pytest.raises(requests.exceptions.HTTPError) as exc:
             c.fetch("data")
-        assert str(exc.value) == f"400 Client Error: Bad Request for url: {BASE_URL}/data"
+        assert (
+            str(exc.value) == f"400 Client Error: Bad Request for url: {BASE_URL}/data"
+        )
 
 
 class TestFetchAll:
@@ -248,7 +250,8 @@ class TestRetry:
 
         c = HTTPClient(BASE_URL, 10, 5)
         with pytest.raises(
-            requests.exceptions.HTTPError, match=r"^500 Server Error.*: DatabaseOperationFailed$"
+            requests.exceptions.HTTPError,
+            match=r"^500 Server Error.*: DatabaseOperationFailed$",
         ):
             c.fetch_all("data")
         assert mock_sleep.call_count == 3
