@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `PSEClient.endpoints()`: names of all endpoints
+- `PSEClient.columns(endpoint)`: data columns of an endpoint, in API order
+  (meta columns left out). Both read the bundled registry, no HTTP request.
+
 ### Changed
 - `docs/endpoints.md` is generated from the endpoint registry
   (`scripts/gen_docs.py`) and lists the data columns of all 90 endpoints,

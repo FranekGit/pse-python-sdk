@@ -3,8 +3,8 @@ from __future__ import annotations
 from pse_sdk._dates import normalize_date_range, split_date_range
 from pse_sdk._format import OutputFormat, convert, validate_format
 from pse_sdk._http import HTTPClient
-from pse_sdk._query import build_select, date_clauses, get_spec
-from pse_sdk._registry import Endpoint
+from pse_sdk._query import build_select, data_columns, date_clauses, get_spec
+from pse_sdk._registry import REGISTRY, Endpoint
 
 
 class PSEClient:
@@ -17,6 +17,8 @@ class PSEClient:
 
         from pse_sdk import PSEClient
         pse = PSEClient()
+        pse.endpoints()  # ["afrr-status", "cmbp-tp", ...]
+        pse.columns("price-cost")  # ["cen_cost", "ckoeb_cost", ...]
         records = pse.fetch("price-cost", "2024-01-01", "2024-01-31")
         df = pse.fetch(
             "price-cost",
@@ -36,6 +38,24 @@ class PSEClient:
             page_size=self._PAGE_SIZE,
             timeout=timeout,
         )
+
+    @staticmethod
+    def endpoints() -> list[Endpoint]:
+        """Return the names of all endpoints, sorted alphabetically."""
+        return list(REGISTRY)
+
+    @staticmethod
+    def columns(endpoint: Endpoint) -> list[str]:
+        """Return the data columns of *endpoint* in API order.
+
+        These are the names accepted by ``fetch(columns=...)``. Meta columns
+        (``dtime``, ``period``, ``business_date``, ``publication_ts`` and their
+        ``*_utc`` variants) are left out; ``fetch()`` always returns them.
+
+        Raises:
+            ValueError: If *endpoint* is unknown.
+        """
+        return data_columns(get_spec(endpoint))
 
     def fetch(
         self,

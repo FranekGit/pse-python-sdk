@@ -18,6 +18,11 @@ def get_spec(endpoint: str) -> EndpointSpec:
         raise ValueError(f"Unknown endpoint {endpoint!r}") from None
 
 
+def data_columns(spec: EndpointSpec) -> list[str]:
+    """Return the non-meta columns of *spec* in API order."""
+    return [c for c in spec.columns if c not in spec.meta_columns]
+
+
 def build_select(spec: EndpointSpec, columns: list[str] | None) -> list[str] | None:
     """Return the ``$select`` columns for *columns* of *spec*.
 

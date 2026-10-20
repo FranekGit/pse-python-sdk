@@ -1,7 +1,7 @@
 import pytest
 
 from pse_sdk._endpoint_spec import EndpointSpec
-from pse_sdk._query import build_select, date_clauses, get_spec
+from pse_sdk._query import build_select, data_columns, date_clauses, get_spec
 from pse_sdk._registry import REGISTRY
 
 SPEC = EndpointSpec(
@@ -26,6 +26,11 @@ class TestGetSpec:
     def test_unknown_endpoint_raises(self):
         with pytest.raises(ValueError, match="Unknown endpoint 'nope'"):
             get_spec("nope")
+
+
+class TestDataColumns:
+    def test_meta_dropped_api_order_kept(self):
+        assert data_columns(SPEC) == ["node", "value", "other"]
 
 
 class TestBuildSelect:
