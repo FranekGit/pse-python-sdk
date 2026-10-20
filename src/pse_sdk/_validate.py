@@ -1,8 +1,3 @@
-"""Check endpoint and column names against the registry before any request.
-
-Typos fail fast with a suggestion instead of an HTTP 400/404 from the API.
-"""
-
 from __future__ import annotations
 
 import difflib

@@ -1,5 +1,3 @@
-"""Build OData query parts for an endpoint from the generated registry."""
-
 from __future__ import annotations
 
 from pse_sdk._endpoint_spec import EndpointSpec
