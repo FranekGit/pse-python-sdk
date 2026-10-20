@@ -1,19 +1,32 @@
 # Endpoints
 
-All endpoints share the same signature:
+## `fetch()`
+
+Any endpoint can be queried by name:
+
+```python
+fetch(endpoint: Endpoint, start: str, end: str, *,
+      columns: list[str] | None = None, format: OutputFormat = "dict")
+```
+
+- `columns=None` returns all columns.
+- `columns=[...]` returns these columns plus the endpoint's meta columns
+  (`dtime`, `period`, `business_date`, `publication_ts` and their `*_utc`
+  variants, where present) and key columns (e.g. `resource_code` on `gen-jw`),
+  so every row stays identifiable.
+- Rows are filtered on `business_date`.
+- `ogr-*-head` endpoints have no date column and are not supported yet.
+
+## `get_*` Methods
+
+Single-column shortcuts with the signature:
 
 ```python
 (start: str, end: str, format: OutputFormat = "dict")
 ```
 
-## Common Response Columns
-
-Every endpoint returns these columns plus endpoint-specific columns:
-
-- `dtime` — timestamp
-- `period` — period identifier
-- `business_date` — business date
-- `publication_ts` — publication timestamp
+Each returns its column plus `dtime`, `period`, `business_date` and
+`publication_ts`.
 
 ## Endpoints Coverage
 
