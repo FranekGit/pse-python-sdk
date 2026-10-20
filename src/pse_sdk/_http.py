@@ -9,6 +9,25 @@ import requests
 logger = logging.getLogger(__name__)
 
 
+def _error_message(resp: requests.Response) -> str | None:
+    """Return the PSE API ``error.message`` from *resp*, or ``None``."""
+    try:
+        return resp.json()["error"]["message"]
+    except (ValueError, KeyError, TypeError):  # non-JSON or unexpected shape
+        return None
+
+
+def _raise_for_status(resp: requests.Response) -> None:
+    """Like ``resp.raise_for_status()``, plus the API error message if any."""
+    try:
+        resp.raise_for_status()
+    except requests.HTTPError as e:
+        message = _error_message(resp)
+        if message is None:
+            raise
+        raise requests.HTTPError(f"{e}: {message}", response=resp) from None
+
+
 class HTTPClient:
     """Low-level HTTP client for the PSE API with OData pagination."""
 
@@ -61,7 +80,7 @@ class HTTPClient:
                 resp.status_code not in self._RETRY_STATUSES
                 or attempt == self._MAX_RETRIES
             ):
-                resp.raise_for_status()
+                _raise_for_status(resp)
                 return resp.json()
             delay = self._BACKOFF_BASE * (2**attempt)
             logger.warning(
