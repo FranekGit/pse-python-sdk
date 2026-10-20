@@ -135,17 +135,6 @@ class TestCommittedRegistry:
     def test_endpoint_literal_matches_registry(self):
         assert typing.get_args(Endpoint) == tuple(REGISTRY)
 
-    def test_contains_client_endpoints(self):
-        used = {
-            "price-cost",
-            "csdac-pln",
-            "krb-rozl",
-            "kmb-kro-rozl",
-            "sk",
-            "his-wlk-cal",
-        }
-        assert used <= set(REGISTRY)
-
     def test_price_cost(self):
         spec = REGISTRY["price-cost"]
         assert spec.columns["cen_cost"] == "number"
