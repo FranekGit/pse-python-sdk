@@ -1,5 +1,3 @@
-"""Endpoint schema type used by the generated ``_registry.py``."""
-
 from __future__ import annotations
 
 from dataclasses import dataclass

@@ -1,11 +1,3 @@
-"""Generate ``docs/endpoints.md`` from the endpoint registry.
-
-Usage::
-
-    uv run scripts/gen_docs.py          # regenerate
-    uv run scripts/gen_docs.py --check  # exit 1 if out of date
-"""
-
 from __future__ import annotations
 
 import argparse
@@ -64,7 +56,7 @@ def _check(source: str) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+        description="Generate docs/endpoints.md from the endpoint registry."
     )
     parser.add_argument(
         "--check",
