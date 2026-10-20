@@ -51,14 +51,12 @@ class HTTPClient:
         if after:
             params.append("$after=" + quote(after))
 
-        resp = self.session.get(url, params="&".join(params), timeout=self.timeout)
-        resp.raise_for_status()
-        return resp.json()
+        return self._request_with_retry(url, params="&".join(params))
 
-    def _request_with_retry(self, url: str) -> dict:
+    def _request_with_retry(self, url: str, params: str | None = None) -> dict:
         """GET *url* with retries on transient server errors."""
         for attempt in range(self._MAX_RETRIES + 1):
-            resp = self.session.get(url, timeout=self.timeout)
+            resp = self.session.get(url, params=params, timeout=self.timeout)
             if (
                 resp.status_code not in self._RETRY_STATUSES
                 or attempt == self._MAX_RETRIES
@@ -69,7 +67,7 @@ class HTTPClient:
             logger.warning(
                 "HTTP %s from %s, retrying in %ss (%d/%d)",
                 resp.status_code,
-                url,
+                resp.url,
                 delay,
                 attempt + 1,
                 self._MAX_RETRIES,
