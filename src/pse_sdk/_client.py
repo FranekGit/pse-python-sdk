@@ -83,17 +83,13 @@ class PSEClient:
         Raises:
             TypeError: If *start* or *end* is not a string, or *columns* is
                 not a list of strings.
-            ValueError: If *endpoint* or a column is unknown, *endpoint* has
-                no date column, *format* is not supported, a date string
-                cannot be parsed, or *start* is after *end*.
+            ValueError: If *endpoint* or a column is unknown, *format* is not
+                supported, a date string cannot be parsed, or *start* is after
+                *end*.
         """
         spec = get_spec(endpoint)
         validate_format(format)
         validate_columns(endpoint, columns)
-        if spec.date_column is None:
-            raise ValueError(
-                f"Endpoint {endpoint!r} has no date column and is not supported yet"
-            )
         start_str, end_str = normalize_date_range(start, end)
         select = build_select(spec, columns)
 
