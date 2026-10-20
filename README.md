@@ -24,11 +24,20 @@ from pse_sdk import PSEClient
 
 client = PSEClient()
 
-# Returns list[dict]
-records = client.get_cen(start="2024-01-01", end="2024-01-31")
+# Returns list[dict] with all columns
+records = client.fetch("price-cost", start="2024-01-01", end="2024-01-31")
 
-# Returns pd.DataFrame (requires pandas)
-df = client.get_cen(start="2024-01-01", end="2024-01-31", format="dataframe")
+# Returns pd.DataFrame (requires pandas) with selected columns
+df = client.fetch(
+    "price-cost",
+    start="2024-01-01",
+    end="2024-01-31",
+    columns=["cen_cost", "ckoeb_cost"],
+    format="dataframe",
+)
+
+# Single-column shortcut
+records = client.get_cen(start="2024-01-01", end="2024-01-31")
 ```
 
 ## Date Formats

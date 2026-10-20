@@ -1,17 +1,19 @@
 from __future__ import annotations
 
-from pse_sdk._dates import normalize_date_range, split_date_range
-from pse_sdk._format import OutputFormat, convert
-from pse_sdk._http import HTTPClient
+from collections.abc import Callable
+
+from pse_sdk._format import OutputFormat
 
 COMMON_COLUMNS = ["dtime", "period", "business_date", "publication_ts"]
 
 
-def make_endpoint(client: HTTPClient, path: str, columns: list[str] | None = None):
-    """Create a callable that fetches and formats endpoint data."""
+def make_endpoint(
+    fetch: Callable[..., list[dict]], path: str, columns: list[str] | None = None
+):
+    """Create a callable that fetches *columns* of *path* via *fetch*."""
     select = list(COMMON_COLUMNS) + columns if columns else None
 
-    def fetch(start: str, end: str, format: OutputFormat = "dict") -> list[dict]:
+    def get(start: str, end: str, format: OutputFormat = "dict") -> list[dict]:
         """Query PSE data for a date range.
 
         Args:
@@ -24,17 +26,6 @@ def make_endpoint(client: HTTPClient, path: str, columns: list[str] | None = Non
             ValueError: If a date string cannot be parsed, or *start* is
                 after *end*.
         """
-        start_str, end_str = normalize_date_range(start, end)
+        return fetch(path, start, end, select=select, format=format)
 
-        records: list[dict] = []
-        for chunk_start, chunk_end in split_date_range(start_str, end_str):
-            filter_expr = (
-                f"business_date ge '{chunk_start}' and business_date le '{chunk_end}'"
-            )
-            records.extend(
-                client.fetch_all(path, select=select, filter_expr=filter_expr)
-            )
-
-        return convert(records, format)
-
-    return fetch
+    return get
