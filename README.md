@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/pse_logo.png" alt="PSE Logo">
+  <img src="https://raw.githubusercontent.com/FranekGit/pse-python-sdk/main/assets/pse_logo.png" alt="PSE Logo">
 </p>
 
 # pse-python-sdk
@@ -39,7 +39,7 @@ df = client.fetch(
 
 ## Documentation
 
-- [docs/usage.md](docs/usage.md): finding endpoints, date ranges, columns and
+- [docs/usage.md](https://github.com/FranekGit/pse-python-sdk/blob/main/docs/usage.md): finding endpoints, date ranges, columns and
   output formats
-- [docs/endpoints.md](docs/endpoints.md): all endpoints, their columns and
+- [docs/endpoints.md](https://github.com/FranekGit/pse-python-sdk/blob/main/docs/endpoints.md): all endpoints, their columns and
   types
