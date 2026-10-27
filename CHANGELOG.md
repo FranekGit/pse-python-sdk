@@ -39,6 +39,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - First page request of `fetch()` now retried on 5xx errors, like later
   pages (#32)
+- Non-string endpoint (e.g. a list or dict) raises `ValueError` naming its
+  type, e.g. `Endpoint must be a str, got list.`, instead of
+  `TypeError: unhashable type` (#56)
 
 ## [1.5.1] - 2026-10-20
 
