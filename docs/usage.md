@@ -1,30 +1,62 @@
 # Usage
 
-How `fetch()` picks columns and rows. Per-endpoint data, date and key columns
-are listed in [endpoints.md](endpoints.md).
+How to find an endpoint, fetch a date range, pick columns and choose an
+output format. All endpoints and their columns are listed in
+[endpoints.md](endpoints.md).
 
-## Columns
+## Find an endpoint
 
-- `columns=None` returns all columns.
-- `columns=[...]` returns these columns plus the endpoint's meta columns
-  (`dtime`, `period`, `business_date`, `publication_ts` and their `*_utc`
-  variants, where present) and key columns (e.g. `resource_code` on `gen-jw`),
-  so every row stays identifiable.
-- `client.columns(endpoint)` lists the names accepted by `columns=`. Meta
-  columns are not listed there, but are always returned.
+```python
+from pse_sdk import PSEClient
 
-## Date filter
+client = PSEClient()
 
-`start` and `end` are inclusive. Rows are filtered on the endpoint's date
-column: `business_date` for most endpoints, `period` (plan date) for
-`ogr-d1-head`, `ogr-d2-head`, `ogr-d39-head`, `ogr-m-head`, `ogr-oper-head` and
-`ogr-r-head`.
+client.endpoints()            # ["afrr-status", "cmbp-tp", ...]
+client.columns("price-cost")  # ["cen_cost", "ckoeb_cost", ...]
+```
 
-On `ogr-d39-head`, `ogr-m-head` and `ogr-r-head`, `period` is the plan's first
-day, so a range returns plans starting in it, not plans active in it. Their
-`from_period` and `to_period` columns give the plan's span.
+## Fetch a date range
 
-## Requests
+```python
+rows = client.fetch("price-cost", "2025-10-01", "2025-10-31")
+```
 
-The range is fetched in 30-day chunks, and each chunk follows the API's pages.
-Long ranges take several requests.
+`start` and `end` are inclusive and accept these formats:
+
+| Format       | Example      |
+|--------------|--------------|
+| `YYYY-MM-DD` | `2025-10-01` |
+| `YYYY/MM/DD` | `2025/10/01` |
+| `YYYYMMDD`   | `20251001`   |
+
+## Pick columns
+
+`columns=None` (the default) returns all columns. Pass a list to get only
+some of them:
+
+```python
+rows = client.fetch("price-cost", "2025-10-01", "2025-10-01", columns=["cen_cost"])
+rows[0]
+```
+
+```python
+{
+    "dtime": "2025-10-01 00:15:00",
+    "period": "00:00 - 00:15",
+    "cen_cost": 449.02,
+    "dtime_utc": "2025-09-30 22:15:00",
+    "period_utc": "22:00 - 22:15",
+    "business_date": "2025-10-01",
+    "publication_ts": "2026-06-16 12:11:18.607",
+    "publication_ts_utc": "2026-06-16 10:11:18.607",
+}
+```
+
+## Choose an output format
+
+| `format`            | Returns        |
+|---------------------|----------------|
+| `"dict"` (default)  | `list[dict]`   |
+| `"dataframe"`       | `pd.DataFrame` |
+
+`"dataframe"` requires pandas
