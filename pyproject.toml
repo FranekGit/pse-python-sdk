@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "pse-sdk"
 dynamic = ["version"]
-description = "Python SDK for the PSE (Polskie Sieci Elektroenergetyczne) public REST API"
+description = "Unofficial Python SDK for the PSE (Polskie Sieci Elektroenergetyczne) public REST API"
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE.md"]

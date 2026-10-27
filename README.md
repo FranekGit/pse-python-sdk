@@ -11,10 +11,13 @@ Python SDK for the PSE (Polskie Sieci Elektroenergetyczne) public reporting API.
 > API reference: https://api.raporty.pse.pl/app/home
 
 
+> **Disclaimer:** not affiliated with PSE S.A.
+
+
 ## Installation
 
 ```bash
-pip install git+https://github.com/FranekGit/pse-python-sdk.git
+pip install pse-sdk
 ```
 
 ## Quick Start

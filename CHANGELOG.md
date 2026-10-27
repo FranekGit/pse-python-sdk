@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - License is now MIT (was proprietary)
+- README and package description state the SDK is unofficial and not
+  affiliated with PSE S.A.
 - Unknown endpoint errors suggest the closest endpoint name (#25)
 - `HTTPError` from the API includes the API's error message, e.g.
   `Invalid field to be returned requested: cen_cots`
