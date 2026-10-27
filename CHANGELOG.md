@@ -5,9 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.0.0] - 2026-10-27
 
 ### Added
+- `PSEClient.fetch(endpoint, start, end, columns=None, format="dict")`:
+  query any of the 90 PSE API endpoints for a date range, fetched in
+  30-day chunks. Replaces the `get_*` methods
 - Published on PyPI as `pse-sdk`: `pip install pse-sdk`, or
   `pip install "pse-sdk[pandas]"` for DataFrame output
 - `PSEClient.endpoints()`: names of all endpoints
@@ -33,6 +36,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   date and key columns of each. The Description column is dropped.
 - `fetch()` column and date-filter notes moved from `docs/endpoints.md` and
   the README to the new `docs/usage.md`
+- Development uses uv: dev dependencies in a uv dependency group,
+  `uv.lock` and `.python-version` committed
+- Package version is read from `pse_sdk.__version__` (hatch dynamic
+  version)
+- GitHub Actions: `tests.yml` runs ruff, `gen_docs.py --check` and tests on
+  Python 3.10–3.14; `publish.yml` publishes to PyPI on `v*` tag push
+  (TestPyPI on manual run)
 
 ### Removed
 - **Breaking:** all 32 `get_*` methods of `PSEClient` (`get_cen`, `get_csdac`,
