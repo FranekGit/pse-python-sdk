@@ -1,23 +1,21 @@
-Copyright (C) 2026 FranekGit - All Rights Reserved.
+MIT License
 
-IMPORTANT NOTICE: PLEASE READ CAREFULLY BEFORE USING THE SOFTWARE.
+Copyright (c) 2026 FranekGit
 
-1. PROPRIETARY AND CONFIDENTIAL INFORMATION
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-The contents of this project, including its source code, are proprietary and confidential. Unauthorized copying, transferring, or reproduction of any part of this project, through any medium, is strictly prohibited.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-2. LICENSE GRANT
-
-The receipt or possession of the source code and/or any parts thereof does not convey or imply any right to use them for any purpose other than the specific purpose for which they were provided to you.
-
-3. DISCLAIMER OF WARRANTIES
-
-The software is provided "AS IS," without warranty of any kind, express or implied, including, but not limited to, the warranties of merchantability, fitness for a particular purpose, and non-infringement.
-
-4. LIMITATION OF LIABILITY
-
-In no event shall Sourceduty, its authors, or copyright holders be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the Software or the use or other dealings in the Software.
-
-5. COPYRIGHT NOTICE
-
-You are required to include the above copyright notice and this permission notice in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
