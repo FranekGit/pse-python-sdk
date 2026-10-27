@@ -19,11 +19,17 @@ def suggest(name: str, choices: Iterable[str]) -> str | None:
 
 
 def validate_endpoint(endpoint: str) -> None:
-    """Raise ``ValueError`` if *endpoint* is not in the registry."""
-    if endpoint in REGISTRY:
-        return
-    match = suggest(endpoint, REGISTRY)
-    hint = f"Did you mean {match!r}?" if match else "See PSEClient.endpoints()."
+    """Raise ``ValueError`` if *endpoint* is not in the registry.
+
+    A non-string *endpoint* is unknown; the message names its type.
+    """
+    if isinstance(endpoint, str):
+        if endpoint in REGISTRY:
+            return
+        match = suggest(endpoint, REGISTRY)
+        hint = f"Did you mean {match!r}?" if match else "See PSEClient.endpoints()."
+    else:
+        hint = f"Endpoint must be a str, got {type(endpoint).__name__}."
     raise ValueError(f"Unknown endpoint {endpoint!r}. {hint}")
 
 
