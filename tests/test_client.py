@@ -60,6 +60,11 @@ class TestColumns:
         with pytest.raises(ValueError, match="Did you mean 'price-cost'"):
             PSEClient.columns("price-cots")
 
+    @pytest.mark.parametrize("endpoint", [["price-cost"], {"price-cost": 1}])
+    def test_non_str_endpoint_raises(self, endpoint):
+        with pytest.raises(ValueError, match="Endpoint must be a str"):
+            PSEClient.columns(endpoint)
+
     @pytest.mark.parametrize("name", REGISTRY)
     def test_registry_columns_no_meta(self, name):
         columns = PSEClient.columns(name)
@@ -141,6 +146,12 @@ class TestFetch:
     def test_unknown_endpoint_suggests(self, pse):
         with pytest.raises(ValueError, match="Did you mean 'price-cost'"):
             pse.fetch("price-cots", "2024-01-01", "2024-01-30")
+
+    @pytest.mark.parametrize("endpoint", [["price-cost"], {"price-cost": 1}])
+    def test_non_str_endpoint_raises_before_request(self, pse, endpoint):
+        with pytest.raises(ValueError, match="Endpoint must be a str"):
+            pse.fetch(endpoint, "2024-01-01", "2024-01-30")
+        pse.client.fetch_all.assert_not_called()
 
     def test_unknown_column_raises_before_request(self, pse):
         with pytest.raises(

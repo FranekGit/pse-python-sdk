@@ -35,8 +35,19 @@ class TestValidateEndpoint:
             "Unknown endpoint 'xyz'. See PSEClient.endpoints()."
         )
 
-    def test_non_str(self):
-        assert error(validate_endpoint, None).startswith("Unknown endpoint None.")
+    @pytest.mark.parametrize(
+        ("endpoint", "type_name"),
+        [
+            (None, "NoneType"),
+            (5, "int"),
+            (["price-cost"], "list"),
+            ({"price-cost": 1}, "dict"),
+        ],
+    )
+    def test_non_str(self, endpoint, type_name):
+        assert error(validate_endpoint, endpoint) == (
+            f"Unknown endpoint {endpoint!r}. Endpoint must be a str, got {type_name}."
+        )
 
 
 class TestValidateColumns:
