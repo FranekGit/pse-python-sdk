@@ -621,7 +621,6 @@ wheels = [
 
 [[package]]
 name = "pse-sdk"
-version = "1.5.1"
 source = { editable = "." }
 dependencies = [
     { name = "requests" },
@@ -652,9 +651,9 @@ provides-extras = ["pandas"]
 [package.metadata.requires-dev]
 dev = [
     { name = "pandas", specifier = ">=1.5" },
-    { name = "pytest" },
-    { name = "responses" },
-    { name = "ruff" },
+    { name = "pytest", specifier = ">=8" },
+    { name = "responses", specifier = ">=0.25" },
+    { name = "ruff", specifier = ">=0.15" },
 ]
 
 [[package]]

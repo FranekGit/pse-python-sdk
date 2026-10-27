@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Published on PyPI as `pse-sdk`: `pip install pse-sdk`, or
+  `pip install "pse-sdk[pandas]"` for DataFrame output
 - `PSEClient.endpoints()`: names of all endpoints
 - `PSEClient.columns(endpoint)`: data columns of an endpoint, in API order
   (meta columns left out). Both read the bundled registry, no HTTP request.
@@ -19,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (#37)
 
 ### Changed
+- License is now MIT (was proprietary)
 - Unknown endpoint errors suggest the closest endpoint name (#25)
 - `HTTPError` from the API includes the API's error message, e.g.
   `Invalid field to be returned requested: cen_cots`
