@@ -24,46 +24,22 @@ from pse_sdk import PSEClient
 
 client = PSEClient()
 
-# Returns list[dict] with all columns
-records = client.fetch("price-cost", start="2024-01-01", end="2024-01-31")
+# list[dict] with all columns
+rows = client.fetch("price-cost", start="2025-10-01", end="2025-10-31")
 
-# Returns pd.DataFrame (requires pandas) with selected columns
+# pd.DataFrame (requires pandas) with selected columns
 df = client.fetch(
     "price-cost",
-    start="2024-01-01",
-    end="2024-01-31",
+    start="2025-10-01",
+    end="2025-10-31",
     columns=["cen_cost", "ckoeb_cost"],
     format="dataframe",
 )
 ```
 
-See [docs/usage.md](docs/usage.md) for which columns are returned and how rows
-are filtered by date.
+## Documentation
 
-## Date Formats
-
-| Format       | Example      |
-|--------------|--------------|
-| `YYYY-MM-DD` | `2024-01-01` |
-| `YYYY/MM/DD` | `2024/01/01` |
-| `YYYYMMDD`   | `20240101`   |
-
-## Output Formats
-
-| Format        | Return Type    | 
-|---------------|----------------|
-| `"dict"`      | `list[dict]`   |
-| `"dataframe"` | `pd.DataFrame` |
-
-## Endpoints
-
-List endpoints and their data columns without any HTTP request:
-
-```python
-client.endpoints()            # ["afrr-status", "cmbp-tp", ...]
-client.columns("price-cost")  # ["cen_cost", "ckoeb_cost", ...]
-```
-
-See [docs/endpoints.md](docs/endpoints.md) for all endpoints, their columns
-and types.
-
+- [docs/usage.md](docs/usage.md): finding endpoints, date ranges, columns and
+  output formats
+- [docs/endpoints.md](docs/endpoints.md): all endpoints, their columns and
+  types
