@@ -1,20 +1,23 @@
 <p align="center">
-  <img src="assets/pse_logo.png" alt="PSE Logo">
+  <img src="https://raw.githubusercontent.com/FranekGit/pse-python-sdk/main/assets/pse_logo.png" alt="PSE Logo">
 </p>
 
 # pse-python-sdk
 
-![Version](https://img.shields.io/badge/version-v1.5.1-blue)
+![Version](https://img.shields.io/badge/version-v2.0.0-blue)
 
 Python SDK for the PSE (Polskie Sieci Elektroenergetyczne) public reporting API.
 
 > API reference: https://api.raporty.pse.pl/app/home
 
 
+> **Disclaimer:** not affiliated with PSE S.A.
+
+
 ## Installation
 
 ```bash
-pip install git+https://github.com/FranekGit/pse-python-sdk.git
+pip install pse-sdk
 ```
 
 ## Quick Start
@@ -24,29 +27,22 @@ from pse_sdk import PSEClient
 
 client = PSEClient()
 
-# Returns list[dict]
-records = client.get_cen(start="2024-01-01", end="2024-01-31")
+# list[dict] with all columns
+rows = client.fetch("price-cost", start="2025-10-01", end="2025-10-31")
 
-# Returns pd.DataFrame (requires pandas)
-df = client.get_cen(start="2024-01-01", end="2024-01-31", format="dataframe")
+# pd.DataFrame (requires pandas) with selected columns
+df = client.fetch(
+    "price-cost",
+    start="2025-10-01",
+    end="2025-10-31",
+    columns=["cen_cost", "ckoeb_cost"],
+    format="dataframe",
+)
 ```
 
-## Date Formats
+## Documentation
 
-| Format       | Example      |
-|--------------|--------------|
-| `YYYY-MM-DD` | `2024-01-01` |
-| `YYYY/MM/DD` | `2024/01/01` |
-| `YYYYMMDD`   | `20240101`   |
-
-## Output Formats
-
-| Format        | Return Type    | 
-|---------------|----------------|
-| `"dict"`      | `list[dict]`   |
-| `"dataframe"` | `pd.DataFrame` |
-
-## Endpoints
-
-See [docs/endpoints.md](docs/endpoints.md) for available endpoints.
-
+- [docs/usage.md](https://github.com/FranekGit/pse-python-sdk/blob/main/docs/usage.md): finding endpoints, date ranges, columns and
+  output formats
+- [docs/endpoints.md](https://github.com/FranekGit/pse-python-sdk/blob/main/docs/endpoints.md): all endpoints, their columns and
+  types

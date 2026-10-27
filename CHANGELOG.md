@@ -5,6 +5,59 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-10-27
+
+### Added
+- `PSEClient.fetch(endpoint, start, end, columns=None, format="dict")`:
+  query any of the 90 PSE API endpoints for a date range, fetched in
+  30-day chunks. Replaces the `get_*` methods
+- Published on PyPI as `pse-sdk`: `pip install pse-sdk`, or
+  `pip install "pse-sdk[pandas]"` for DataFrame output
+- `PSEClient.endpoints()`: names of all endpoints
+- `PSEClient.columns(endpoint)`: data columns of an endpoint, in API order
+  (meta columns left out). Both read the bundled registry, no HTTP request.
+- `fetch()` checks column names against the registry before any request.
+  Unknown columns raise `ValueError` naming each one with a hint (close
+  match, or other endpoints that have it) instead of an HTTP 400. `columns`
+  that is not a list or tuple of strings raises `TypeError` (#25)
+- `fetch()` supports the six `ogr-*-head` endpoints, filtered on `period`
+  (#37)
+
+### Changed
+- License is now MIT (was proprietary)
+- README and package description state the SDK is unofficial and not
+  affiliated with PSE S.A.
+- Unknown endpoint errors suggest the closest endpoint name (#25)
+- `HTTPError` from the API includes the API's error message, e.g.
+  `Invalid field to be returned requested: cen_cots`
+- `docs/endpoints.md` is generated from the endpoint registry
+  (`scripts/gen_docs.py`) and lists the data columns of all 90 endpoints,
+  including the previously missing `wmb` and `his-gen-pal-sire`, plus the
+  date and key columns of each. The Description column is dropped.
+- `fetch()` column and date-filter notes moved from `docs/endpoints.md` and
+  the README to the new `docs/usage.md`
+- Development uses uv: dev dependencies in a uv dependency group,
+  `uv.lock` and `.python-version` committed
+- Package version is read from `pse_sdk.__version__` (hatch dynamic
+  version)
+- GitHub Actions: `tests.yml` runs ruff, `gen_docs.py --check` and tests on
+  Python 3.10–3.14; `publish.yml` publishes to PyPI on `v*` tag push
+  (TestPyPI on manual run)
+
+### Removed
+- **Breaking:** all 32 `get_*` methods of `PSEClient` (`get_cen`, `get_csdac`,
+  `get_kb`, `get_sk_cost`, `get_demand`, ...) and the internal `make_endpoint`
+  helper. Use `fetch()` with the endpoint and column instead:
+  `get_cen(s, e)` → `fetch("price-cost", s, e, columns=["cen_cost"])`.
+  `fetch()` also returns the `*_utc` meta columns.
+
+### Fixed
+- First page request of `fetch()` now retried on 5xx errors, like later
+  pages (#32)
+- Non-string endpoint (e.g. a list or dict) raises `ValueError` naming its
+  type, e.g. `Endpoint must be a str, got list.`, instead of
+  `TypeError: unhashable type` (#56)
+
 ## [1.5.1] - 2026-10-20
 
 ### Added
@@ -67,11 +120,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `PSEClient` class for interacting with the PSE public REST API
-- `OutputFormat` enum for controlling response format (JSON, CSV, XML)
+- `OutputFormat` type (`Literal["dict", "dataframe"]`) for controlling response
+  format: list of dicts or pandas DataFrame
 - `HTTPClient` for managing HTTP requests with pagination support
 - Coverage of the `price-cost` PSE API endpoint
 - Date normalization and validation utilities
-- Configurable `base_url` and `page_size` parameters
+- Configurable HTTP `timeout` parameter
 - Optional pandas integration via `pip install pse-sdk[pandas]`
 - Unit tests for PSEClient and HTTPClient
 

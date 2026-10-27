@@ -1,11 +1,15 @@
 from __future__ import annotations
 
-from pse_sdk._endpoints import make_endpoint
+from pse_sdk._dates import normalize_date_range, split_date_range
+from pse_sdk._format import OutputFormat, convert, validate_format
 from pse_sdk._http import HTTPClient
+from pse_sdk._query import build_select, data_columns, date_clauses, get_spec
+from pse_sdk._registry import REGISTRY, Endpoint
+from pse_sdk._validate import validate_columns
 
 
 class PSEClient:
-    """Client for the PSE (Polskie Sieci Elektoenergetyczne) reporting API.
+    """Client for the PSE (Polskie Sieci Elektroenergetyczne) reporting API.
 
     Args:
         timeout: HTTP timeout in seconds.
@@ -14,8 +18,16 @@ class PSEClient:
 
         from pse_sdk import PSEClient
         pse = PSEClient()
-        records = pse.get_cen("2024-01-01", "2024-01-31")
-        df = pse.get_price_cost("2024-01-01", "2024-01-31", format="dataframe")
+        pse.endpoints()  # ["afrr-status", "cmbp-tp", ...]
+        pse.columns("price-cost")  # ["cen_cost", "ckoeb_cost", ...]
+        records = pse.fetch("price-cost", "2024-01-01", "2024-01-31")
+        df = pse.fetch(
+            "price-cost",
+            "2024-01-01",
+            "2024-01-31",
+            columns=["cen_cost", "ckoeb_cost"],
+            format="dataframe",
+        )
     """
 
     _BASE_URL = "https://api.raporty.pse.pl/api"
@@ -28,106 +40,66 @@ class PSEClient:
             timeout=timeout,
         )
 
-        # price-cost
-        self.get_cen = make_endpoint(
-            client=self.client, path="price-cost", columns=["cen_cost"]
-        )
-        self.get_ckoeb = make_endpoint(
-            client=self.client, path="price-cost", columns=["ckoeb_cost"]
-        )
-        self.get_ceb_sr = make_endpoint(
-            client=self.client, path="price-cost", columns=["ceb_sr_cost"]
-        )
-        self.get_cor_pp = make_endpoint(
-            client=self.client, path="price-cost", columns=["cor_pp_cost"]
-        )
-        self.get_imb_energy = make_endpoint(
-            client=self.client, path="price-cost", columns=["imb_energy"]
-        )
-        self.get_contracting = make_endpoint(
-            client=self.client, path="price-cost", columns=["contracting"]
-        )
+    @staticmethod
+    def endpoints() -> list[Endpoint]:
+        """Return the names of all endpoints, sorted alphabetically."""
+        return list(REGISTRY)
 
-        # csdac-pln
-        self.get_csdac = make_endpoint(
-            client=self.client, path="csdac-pln", columns=["csdac_pln"]
-        )
+    @staticmethod
+    def columns(endpoint: Endpoint) -> list[str]:
+        """Return the data columns of *endpoint* in API order.
 
-        # krb-rozl
-        self.get_kb = make_endpoint(client=self.client, path="krb-rozl", columns=["kb"])
-        self.get_ko = make_endpoint(client=self.client, path="krb-rozl", columns=["ko"])
-        self.get_kcz = make_endpoint(
-            client=self.client, path="krb-rozl", columns=["kcz"]
-        )
+        These are the names accepted by ``fetch(columns=...)``. Meta columns
+        (``dtime``, ``period``, ``business_date``, ``publication_ts`` and their
+        ``*_utc`` variants) are left out; ``fetch()`` always returns them.
 
-        # kmb-kro-rozl
-        self.get_kmb = make_endpoint(
-            client=self.client, path="kmb-kro-rozl", columns=["kmb"]
-        )
-        self.get_kro = make_endpoint(
-            client=self.client, path="kmb-kro-rozl", columns=["kro"]
-        )
+        Raises:
+            ValueError: If *endpoint* is unknown.
+        """
+        return data_columns(get_spec(endpoint))
 
-        # sk
-        self.get_sk_d1_fcst = make_endpoint(
-            client=self.client, path="sk", columns=["sk_d1_fcst"]
-        )
-        self.get_sk_d_fcst = make_endpoint(
-            client=self.client, path="sk", columns=["sk_d_fcst"]
-        )
-        self.get_sk_cost = make_endpoint(
-            client=self.client, path="sk", columns=["sk_cost"]
-        )
+    def fetch(
+        self,
+        endpoint: Endpoint,
+        start: str,
+        end: str,
+        *,
+        columns: list[str] | None = None,
+        format: OutputFormat = "dict",
+    ):
+        """Query *endpoint* for a date range.
 
-        # his-wlk-cal
-        self.get_demand = make_endpoint(
-            client=self.client, path="his-wlk-cal", columns=["demand"]
-        )
-        self.get_swm_p = make_endpoint(
-            client=self.client, path="his-wlk-cal", columns=["swm_p"]
-        )
-        self.get_swm_np = make_endpoint(
-            client=self.client, path="his-wlk-cal", columns=["swm_np"]
-        )
-        self.get_jg = make_endpoint(
-            client=self.client, path="his-wlk-cal", columns=["jg"]
-        )
-        self.get_jgw1 = make_endpoint(
-            client=self.client, path="his-wlk-cal", columns=["jgw1"]
-        )
-        self.get_jgw2 = make_endpoint(
-            client=self.client, path="his-wlk-cal", columns=["jgw2"]
-        )
-        self.get_jgm1 = make_endpoint(
-            client=self.client, path="his-wlk-cal", columns=["jgm1"]
-        )
-        self.get_jgm2 = make_endpoint(
-            client=self.client, path="his-wlk-cal", columns=["jgm2"]
-        )
-        self.get_jgz1 = make_endpoint(
-            client=self.client, path="his-wlk-cal", columns=["jgz1"]
-        )
-        self.get_jgz2 = make_endpoint(
-            client=self.client, path="his-wlk-cal", columns=["jgz2"]
-        )
-        self.get_jgz3 = make_endpoint(
-            client=self.client, path="his-wlk-cal", columns=["jgz3"]
-        )
-        self.get_jga = make_endpoint(
-            client=self.client, path="his-wlk-cal", columns=["jga"]
-        )
-        self.get_jgo = make_endpoint(
-            client=self.client, path="his-wlk-cal", columns=["jgo"]
-        )
-        self.get_jnwrb = make_endpoint(
-            client=self.client, path="his-wlk-cal", columns=["jnwrb"]
-        )
-        self.get_jgm = make_endpoint(
-            client=self.client, path="his-wlk-cal", columns=["jgm"]
-        )
-        self.get_wi = make_endpoint(
-            client=self.client, path="his-wlk-cal", columns=["wi"]
-        )
-        self.get_pv = make_endpoint(
-            client=self.client, path="his-wlk-cal", columns=["pv"]
-        )
+        The range is fetched in 30-day chunks.
+
+        Args:
+            endpoint: Endpoint name, e.g. ``"price-cost"``.
+            start: Begin of range (``YYYY-MM-DD``, ``YYYY/MM/DD``, or ``YYYYMMDD``).
+            end: End of range (``YYYY-MM-DD``, ``YYYY/MM/DD``, or ``YYYYMMDD``).
+            columns: Data columns to return. The endpoint's meta and key
+                columns are always included. ``None`` (default) returns all
+                columns.
+            format: Output format — ``"dict"`` (default) or ``"dataframe"``.
+
+        Raises:
+            TypeError: If *start* or *end* is not a string, or *columns* is
+                not a list of strings.
+            ValueError: If *endpoint* or a column is unknown, *format* is not
+                supported, a date string cannot be parsed, or *start* is after
+                *end*.
+        """
+        spec = get_spec(endpoint)
+        validate_format(format)
+        validate_columns(endpoint, columns)
+        start_str, end_str = normalize_date_range(start, end)
+        select = build_select(spec, columns)
+
+        records: list[dict] = []
+        for chunk_start, chunk_end in split_date_range(start_str, end_str):
+            filter_expr = " and ".join(
+                date_clauses(spec.date_column, chunk_start, chunk_end)
+            )
+            records.extend(
+                self.client.fetch_all(endpoint, select=select, filter_expr=filter_expr)
+            )
+
+        return convert(records, format)

@@ -9,12 +9,10 @@
    cd pse-python-sdk
    ```
 
-2. **Set up a virtual environment** and install dev dependencies:
+2. **Install [uv](https://docs.astral.sh/uv/getting-started/installation/)** and sync the environment (creates `.venv` with the package and dev dependencies, pinned by `uv.lock`):
 
    ```bash
-   python -m venv .venv
-   source .venv/bin/activate   # Windows: .venv\Scripts\activate
-   pip install -e ".[dev]"
+   uv sync
    ```
 
 3. **Checkout `develop`** — all feature work starts here:
@@ -43,20 +41,58 @@ Short-lived branches for specific work:
 
 ## Development Workflow
 
-Run these from the project root with your venv activated:
+Run these from the project root:
 
 ```bash
 # Run tests
-pytest
+uv run pytest
 
 # Lint
-ruff check src/
+uv run ruff check src/ scripts/ tests/
 
 # Format
-ruff format src/
+uv run ruff format src/ scripts/ tests/
 ```
 
 Fix any lint/test failures before opening a PR.
+
+## Endpoint Registry
+
+`src/pse_sdk/_registry.py` is generated from the PSE OpenAPI spec (`https://api.raporty.pse.pl/api/openapi`) — don't edit it by hand.
+
+```bash
+# Regenerate from the live spec
+uv run scripts/gen_registry.py
+
+# Check that the committed registry is up to date
+uv run scripts/gen_registry.py --check
+```
+
+## Endpoint Docs
+
+`docs/endpoints.md` is generated from the registry — don't edit it by hand. Regenerate it after any registry change.
+
+```bash
+# Regenerate
+uv run scripts/gen_docs.py
+
+# Check that the committed docs are up to date
+uv run scripts/gen_docs.py --check
+```
+
+## Dependencies
+
+Dev dependencies live in the `dev` dependency group in `pyproject.toml`; exact versions are pinned in `uv.lock`.
+
+```bash
+# Add a dev dependency
+uv add --dev <package>
+
+# Upgrade a single locked package
+uv lock --upgrade-package <package>
+```
+
+Commit `uv.lock` together with any `pyproject.toml` dependency change.
 
 ## Commit Convention
 

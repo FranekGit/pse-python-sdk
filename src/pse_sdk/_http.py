@@ -51,30 +51,7 @@ class HTTPClient:
         if after:
             params.append("$after=" + quote(after))
 
-        resp = self.session.get(url, params="&".join(params), timeout=self.timeout)
-        resp.raise_for_status()
-        return resp.json()
-
-    def _request_with_retry(self, url: str) -> dict:
-        """GET *url* with retries on transient server errors."""
-        for attempt in range(self._MAX_RETRIES + 1):
-            resp = self.session.get(url, timeout=self.timeout)
-            if (
-                resp.status_code not in self._RETRY_STATUSES
-                or attempt == self._MAX_RETRIES
-            ):
-                resp.raise_for_status()
-                return resp.json()
-            delay = self._BACKOFF_BASE * (2**attempt)
-            logger.warning(
-                "HTTP %s from %s, retrying in %ss (%d/%d)",
-                resp.status_code,
-                url,
-                delay,
-                attempt + 1,
-                self._MAX_RETRIES,
-            )
-            time.sleep(delay)
+        return self._request_with_retry(url, params="&".join(params))
 
     def fetch_all(
         self,
@@ -99,3 +76,43 @@ class HTTPClient:
             records.extend(data.get("value", []))
 
         return records
+
+    def _request_with_retry(self, url: str, params: str | None = None) -> dict:
+        """GET *url* with retries on transient server errors."""
+        for attempt in range(self._MAX_RETRIES + 1):
+            resp = self.session.get(url, params=params, timeout=self.timeout)
+            if (
+                resp.status_code not in self._RETRY_STATUSES
+                or attempt == self._MAX_RETRIES
+            ):
+                self._raise_for_status(resp)
+                return resp.json()
+            delay = self._BACKOFF_BASE * (2**attempt)
+            logger.warning(
+                "HTTP %s from %s, retrying in %ss (%d/%d)",
+                resp.status_code,
+                resp.url,
+                delay,
+                attempt + 1,
+                self._MAX_RETRIES,
+            )
+            time.sleep(delay)
+
+    @staticmethod
+    def _raise_for_status(resp: requests.Response) -> None:
+        """Like ``resp.raise_for_status()``, plus the API error message if any."""
+        try:
+            resp.raise_for_status()
+        except requests.HTTPError as e:
+            message = HTTPClient._error_message(resp)
+            if message is None:
+                raise
+            raise requests.HTTPError(f"{e}: {message}", response=resp) from None
+
+    @staticmethod
+    def _error_message(resp: requests.Response) -> str | None:
+        """Return the PSE API ``error.message`` from *resp*, or ``None``."""
+        try:
+            return resp.json()["error"]["message"]
+        except (ValueError, KeyError, TypeError):  # non-JSON or unexpected shape
+            return None
