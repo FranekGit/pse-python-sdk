@@ -6,13 +6,9 @@
 
 ![Version](https://img.shields.io/badge/version-v2.0.0-blue)
 
-Python SDK for the PSE (Polskie Sieci Elektroenergetyczne) public reporting API.
+Community-maintained Python SDK for the PSE (Polskie Sieci Elektroenergetyczne) public reporting API.
 
 > API reference: https://api.raporty.pse.pl/app/home
-
-
-> **Disclaimer:** not affiliated with PSE S.A.
-
 
 ## Installation
 
